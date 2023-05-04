@@ -73,8 +73,6 @@ class WhatsappController extends Controller
         $body = $request->all();
 
         // Check the Incoming webhook message
-        Log::info(json_encode($body));
-
         // info on WhatsApp text message payload: https://developers.facebook.com/docs/whatsapp/cloud-api/webhooks/payload-examples#text-messages
         if (isset($body['object'])) {
             if (isset($body['entry']) && isset($body['entry'][0]['changes']) && isset($body['entry'][0]['changes'][0]['value']['messages']) && isset($body['entry'][0]['changes'][0]['value']['messages'][0])) {
@@ -112,16 +110,16 @@ class WhatsappController extends Controller
         $challenge = $request->input('hub.challenge');
 
         // Check if a token and mode were sent
-        if ($mode && $token) {
+        /*if ($mode && $token) {
             // Check the mode and token sent are correct
             if ($mode === "subscribe" && $token === $verify_token) {
                 // Respond with 200 OK and challenge token from the request
-                Log::info("WEBHOOK_VERIFIED");
                 return response($challenge, 200);
             } else {
                 // Responds with '403 Forbidden' if verify tokens do not match
                 return response('Forbidden', 403);
             }
-        }
+        }*/
+        return $request;
     }
 }
