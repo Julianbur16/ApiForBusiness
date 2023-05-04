@@ -108,9 +108,8 @@ class WhatsappController extends Controller
         $mode = $request->input('hub.mode');
         $token = $request->input('hub.verify_token');
         $challenge = $request->input('hub.challenge');
-        return $request;
         // Check if a token and mode were sent
-        /*if ($mode && $token) {
+        if ($mode && $token) {
             // Check the mode and token sent are correct
             if ($mode === "subscribe" && $token === $verify_token) {
                 // Respond with 200 OK and challenge token from the request
@@ -119,6 +118,6 @@ class WhatsappController extends Controller
                 // Responds with '403 Forbidden' if verify tokens do not match
                 return response('Forbidden', 403);
             }
-        }*/
+        }
     }
 }
