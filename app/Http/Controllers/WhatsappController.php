@@ -97,6 +97,8 @@ class WhatsappController extends Controller
                         ));
                         $result = curl_exec($ch);
                         curl_close($ch);
+                        $resultdeco = json_decode($result);
+                        $text = $resultdeco->choices[0]->text;
 
 
                         
@@ -105,7 +107,7 @@ class WhatsappController extends Controller
                     'json' => [
                         'messaging_product' => 'whatsapp',
                         'to' => $from,
-                        'text' => ['body' => 'Ack: ' . $result],
+                        'text' => ['body' => 'Ack: ' . $text],
                     ],
                 ]);
             }
