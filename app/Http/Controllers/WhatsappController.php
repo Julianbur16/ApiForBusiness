@@ -71,6 +71,7 @@ class WhatsappController extends Controller
     {
         // Parse the request body from the POST
         $body = $request->all();
+        $openaiApiKey = env('OPENAI_API_KEY');
 
         // Check the Incoming webhook message
         // info on WhatsApp text message payload: https://developers.facebook.com/docs/whatsapp/cloud-api/webhooks/payload-examples#text-messages
@@ -80,12 +81,31 @@ class WhatsappController extends Controller
                 $from = $body['entry'][0]['changes'][0]['value']['messages'][0]['from']; // extract the phone number from the webhook payload
                 $msg_body = $body['entry'][0]['changes'][0]['value']['messages'][0]['text']['body']; // extract the message text from the webhook payload
 
+                $data = array(
+                    'model' => 'text-davinci-003', // Especifica el modelo de OpenAI que se utilizará para generar el texto
+                    'prompt' => $msg_body, // Especifica el fragmento de texto que se usará como entrada para generar el texto
+                    'max_tokens' => 2100, // Especifica el número máximo de "tokens" (palabras o caracteres) que se generarán en la respuesta
+                    'temperature' => 0.5 // Especifica el nivel de "temperatura" para el modelo (0 = sin aleatoriedad, 1 = completamente aleatorio)
+                );
+                        $payload = json_encode($data);
+                        $ch = curl_init('https://api.openai.com/v1/completions');
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+                        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                            'Content-Type: application/json',
+                            'Authorization: Bearer '.$openaiApiKey
+                        ));
+                        $result = curl_exec($ch);
+                        curl_close($ch);
+
+
+                        
                 $client = new Client();
                 $response = $client->post('https://graph.facebook.com/v12.0/' . $phone_number_id . '/messages?access_token=' . env('WHATSAPP_TOKEN'), [
                     'json' => [
                         'messaging_product' => 'whatsapp',
                         'to' => $from,
-                        'text' => ['body' => 'Ack: ' . $msg_body],
+                        'text' => ['body' => 'Ack: ' . $result],
                     ],
                 ]);
             }
