@@ -105,12 +105,10 @@ class WhatsappController extends Controller
         $verify_token = env('VERIFY_TOKEN');
 
         // Parse params from the webhook verification request
-        $mode = $request->input('hub-mode');
-        $token = $request->input('hub-verify_token');
-        $challenge = $request->input('hub-challenge');
-        print_r($mode);
-        print_r($token);
-        print_r($challenge);
+        $mode = $request->input('hub.mode');
+        $token = $request->input('hub.verify_token');
+        $challenge = $request->input('hub.challenge');
+        return $request;
         // Check if a token and mode were sent
         /*
         if ($mode && $token) {
