@@ -108,7 +108,9 @@ class WhatsappController extends Controller
         $mode = $request->input('hub.mode');
         $token = $request->input('hub.verify_token');
         $challenge = $request->input('hub.challenge');
-        return $request;
+        print_r($mode);
+        print_r($token);
+        print_r($challenge);
         // Check if a token and mode were sent
         /*
         if ($mode && $token) {
