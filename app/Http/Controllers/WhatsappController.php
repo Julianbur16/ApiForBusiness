@@ -114,9 +114,11 @@ class WhatsappController extends Controller
             if ($mode === "subscribe" && $token === $verify_token) {
                 // Respond with 200 OK and challenge token from the request
                 return response($challenge, 200);
+                echo "si";
             } else {
                 // Responds with '403 Forbidden' if verify tokens do not match
                 return response('Forbidden', 403);
+                echo "no";
             }
         }
     }
