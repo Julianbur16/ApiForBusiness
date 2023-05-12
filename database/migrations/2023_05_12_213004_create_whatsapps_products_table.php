@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('whatsapps', function (Blueprint $table) {
+        Schema::create('whatsapps_products', function (Blueprint $table) {
             $table->id();
-            $table->string('Phone')->unique();
-            $table->string('Profession')->nullable();
-            $table->string('Name')->nullable();
-            $table->string('City')->nullable();
+            $table->unsignedBigInteger('whatsapp_id');
+            $table->foreign('whatsapp_id')->references('id')->on('whatsapps');
+            $table->unsignedBigInteger('product_id');
+            $table->foreign('product_id')->references('id')->on('products');
             $table->timestamps();
         });
     }
@@ -26,7 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('whatsapps');
+        Schema::dropIfExists('whatsapps_products');
     }
 };
-

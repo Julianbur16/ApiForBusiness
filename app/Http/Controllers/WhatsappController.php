@@ -30,7 +30,11 @@ class WhatsappController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $whatsapps=new Whatsapp();
+        $whatsapps->Phone=$request->Phone;
+        $whatsapps->Name=$request->Name;
+        $whatsapps->Profession=$request->Profession;
+        $whatsapps->City=$request->City;
     }
 
     /**
@@ -80,7 +84,9 @@ class WhatsappController extends Controller
                 $phone_number_id = $body['entry'][0]['changes'][0]['value']['metadata']['phone_number_id'];
                 $from = $body['entry'][0]['changes'][0]['value']['messages'][0]['from']; // extract the phone number from the webhook payload
                 $msg_body = $body['entry'][0]['changes'][0]['value']['messages'][0]['text']['body']; // extract the message text from the webhook payload
-
+                
+                $whatsapp=Whatsapp::where('Phone',$from)->get();
+                if($whatsapp!=null){
                 $data = array(
                     'model' => 'text-davinci-003', // Especifica el modelo de OpenAI que se utilizará para generar el texto
                     'prompt' => $msg_body, // Especifica el fragmento de texto que se usará como entrada para generar el texto
@@ -107,9 +113,22 @@ class WhatsappController extends Controller
                     'json' => [
                         'messaging_product' => 'whatsapp',
                         'to' => $from,
-                        'text' => ['body' => 'Ack: ' . $text1],
+                        'text' => ['body' => $text1],
                     ],
                 ]);
+            }else{
+
+                $client = new Client();
+                $response = $client->post('https://graph.facebook.com/v12.0/' . $phone_number_id . '/messages?access_token=' . env('WHATSAPP_TOKEN'), [
+                    'json' => [
+                        'messaging_product' => 'whatsapp',
+                        'to' => $from,
+                        'text' => ['body' => 'Usuario no registrado'],
+                    ],
+                ]);
+
+            }
+            
             }
             return response('Success', 200);
         } else {

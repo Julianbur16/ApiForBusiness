@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Whatsapp extends Model
+class product extends Model
 {
     use HasFactory;
-    public function products(): BelongsToMany
+    public function whatsapps(): BelongsToMany
     {
-        return $this->belongsToMany(product::class);
+        return $this->belongsToMany(Whatsapp::class);
     }
 }
