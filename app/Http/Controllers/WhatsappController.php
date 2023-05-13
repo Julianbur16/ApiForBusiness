@@ -101,11 +101,6 @@ class WhatsappController extends Controller
                         $text1 = $resultdecode->choices[0]->text;
 
                         $bandera=Whatsapp::where('Phone','3157683957')->get();
-                        if($bandera == null){
-                            $bande='1';
-                        }else{
-                            $bande='0';
-                        }
 
                         
                 $client = new Client();
@@ -113,7 +108,7 @@ class WhatsappController extends Controller
                     'json' => [
                         'messaging_product' => 'whatsapp',
                         'to' => $from,
-                        'text' => ['body' => 'Ack: ' . $bande],
+                        'text' => ['body' => 'Ack: ' . $bandera],
                     ],
                 ]);
             }
