@@ -65,7 +65,16 @@ class WhatsappController extends Controller
         //
     }
 
-
+    public function enviarmsm(string $phone_number_id, string $from, string $text){
+        $client = new Client();
+        $response = $client->post('https://graph.facebook.com/v12.0/' . $phone_number_id . '/messages?access_token=' . env('WHATSAPP_TOKEN'), [
+            'json' => [
+                'messaging_product' => 'whatsapp',
+                'to' => $from,
+                'text' => ['body' => $text],
+            ],
+        ]);
+    }
 
     public function webhook(Request $request)
     {
@@ -140,25 +149,10 @@ class WhatsappController extends Controller
                         $bandera=Whatsapp::where('Phone',$from)->get();
                         if(count($bandera)==1){
 
-                        
-                        
-                $client = new Client();
-                $response = $client->post('https://graph.facebook.com/v12.0/' . $phone_number_id . '/messages?access_token=' . env('WHATSAPP_TOKEN'), [
-                    'json' => [
-                        'messaging_product' => 'whatsapp',
-                        'to' => $from,
-                        'text' => ['body' => $text1],
-                    ],
-                ]);
-            }else{
-                $client = new Client();
-                $response = $client->post('https://graph.facebook.com/v12.0/' . $phone_number_id . '/messages?access_token=' . env('WHATSAPP_TOKEN'), [
-                    'json' => [
-                        'messaging_product' => 'whatsapp',
-                        'to' => $from,
-                        'text' => ['body' => 'Numero no registrado'],
-                    ],
-                ]);
+                            $this->enviarmsm($phone_number_id,$from,$text1);
+                        }else{
+                            
+                            $this->enviarmsm($phone_number_id,$from,'Numero no registrado');
             }
             }
             return response('Success', 200);
