@@ -103,44 +103,20 @@ class WhatsappController extends Controller
     {
         // Parse the request body from the POST
         $body = $request->all();
-        $promt='Tu nombre sera NUK y podras dar respuesta a preguntas de cultura general y ofrecer productos de una base de datos en tipo json que te la presentare al final del mensaje, segiras unicamente las sigunetes instrucciones para generar una conversacion:
-        PRIMERA INSTRUCCIÓN: si el susuario te saluda tu lo saludaras y solo diras tu nombre, si el usuario no te saluda y te raliza una pregunta de cultura general tu la responderas de manera consisa y corta ademas terminaras tu respuesta preguntado si hay algo mas en lo que puedas ayudar, si el usuario esta interesado en algun producto tu lo consultaras en la base de datos que esta al final del mensaje y sigues la segunda instrucción.
-        SEGUNDA INSTRUCCIÓN: si el producto se encuentra en la bese de datos tu responderas unicamente teniendo en cuenta el nombre, la descripción y el precio del producto, no puedes dar por ningun motivo informacion que no se encuentre en la base de datos y finalizas preguntando si quiere adquirir el producto luego sigues la tercera instrucción, si el producto no se encuentra en la base de datos, tu te disculparas y finalizaras tu respuesta preguntado si hay otro producto que le interese, si el usuario te pide armar un combo de productos tu seras capaz de hacerlo unicamente con los productos existentes en la base de datos y finalizara tu respuesta preguntado si quiere adquirir el combo.
-        TERCERA INSTRUCCION: si la respuesta es afirmativa perdiras el nombre la dirección y el número de telefono, ademas daras a conocer que su pedido se ha realizado exitosamente y que sera entregado en pocos minutos, si la respuesta es negativa responderas preguntado si hay otra cosa en la que puedas ayudarle, si la respuesta es negativa pero tiene ademas una pregunta vuelve a la primera instrucción.
-        
+        $promt_principal = env('MAINPROMT');
+        $promt_productos='{
         "productos": [
             {
-              "nombre": "Ron viejo de caldas",
-              "descripcion": "Licor de muy buena calidad a un precio economico.",
-              "precio": 40000,
-              "marca": "Ron",
-              "disponibilidad": true
-            },
-            {
-               "nombre": "wisky Chivas",
-              "descripcion": "wisky de la mejor calidad, con todas las normativas.",
-              "precio": 120000,
-              "marca": "wisky",
-              "disponibilidad": true
-            },
-            {
-              "nombre": "cerveza corona",
-              "descripcion": "Cerveza corona la mejor opcion para compartir con tus amigos.",
-              "precio": 5000,
-              "marca": "Cerveza",
-              "disponibilidad": true
-            },
-            {
-               "nombre": "Cerveza Poker",
-              "descripcion": "Cerveza poker la cerveza mas refrescante.",
-              "precio": 6000,
-              "marca": "cerveza",
-              "disponibilidad": true
+                "nombre": "Cerveza Poker",
+                "descripcion": "Cerveza poker la cerveza mas refrescante.",
+                "precio": 6000,
+                "marca": "cerveza",
+                "disponibilidad": true
             }
           ]
-        } 
-        
-        usuario:' ;
+        }' ;
+        $promt_convesacion='Usuario: ';
+        $promt=$promt_principal.$promt_productos.$promt_convesacion;
 
         if (isset($body['object'])) {
             if (isset($body['entry']) && isset($body['entry'][0]['changes']) && isset($body['entry'][0]['changes'][0]['value']['messages']) && isset($body['entry'][0]['changes'][0]['value']['messages'][0])) {
