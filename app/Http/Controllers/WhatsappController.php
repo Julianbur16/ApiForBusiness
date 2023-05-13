@@ -100,18 +100,30 @@ class WhatsappController extends Controller
                         $resultdecode = json_decode($result);
                         $text1 = $resultdecode->choices[0]->text;
 
-                        $bandera=Whatsapp::where('Phone','3157683957')->get();
-                        
+                       
+                        $bandera=Whatsapp::where('Phone',$from)->get();
+                        if(count($bandera)==1){
 
+                        
                         
                 $client = new Client();
                 $response = $client->post('https://graph.facebook.com/v12.0/' . $phone_number_id . '/messages?access_token=' . env('WHATSAPP_TOKEN'), [
                     'json' => [
                         'messaging_product' => 'whatsapp',
                         'to' => $from,
-                        'text' => ['body' => 'Ack: ' . count($bandera).$from],
+                        'text' => ['body' => $text1],
                     ],
                 ]);
+            }else{
+                $client = new Client();
+                $response = $client->post('https://graph.facebook.com/v12.0/' . $phone_number_id . '/messages?access_token=' . env('WHATSAPP_TOKEN'), [
+                    'json' => [
+                        'messaging_product' => 'whatsapp',
+                        'to' => $from,
+                        'text' => ['body' => 'Numero no registrado'],
+                    ],
+                ]);
+            }
             }
             return response('Success', 200);
         } else {
