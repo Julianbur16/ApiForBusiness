@@ -120,7 +120,7 @@ class WhatsappController extends Controller
                 $bandera=Whatsapp::where('Phone',$from)->get();
 
                 if(count($bandera)==1){
-                    $this->enviarmsm($phone_number_id,$from,$promt_productos);//envia mensaje de whatsapp
+                    $this->enviarmsm($phone_number_id,$from,$text1);//envia mensaje de whatsapp
                 }else{
                     $this->enviarmsm($phone_number_id,$from,'Numero no registrado');//envia mensaje de whatsapp
                 }
