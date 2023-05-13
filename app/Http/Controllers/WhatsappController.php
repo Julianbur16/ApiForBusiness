@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Whatsapp;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Log;
 
 class WhatsappController extends Controller 
@@ -104,17 +105,8 @@ class WhatsappController extends Controller
         // Parse the request body from the POST
         $body = $request->all();
         $promt_principal = env('MAINPROMT');
-        $promt_productos='{
-        "productos": [
-            {
-                "nombre": "Cerveza Poker",
-                "descripcion": "Cerveza poker la cerveza mas refrescante.",
-                "precio": 6000,
-                "marca": "cerveza",
-                "disponibilidad": true
-            }
-          ]
-        }' ;
+        $promt_productos_obj=new ProductController;
+        $promt_productos=$promt_productos_obj->index();
         $promt_convesacion='Usuario: ';
         $promt=$promt_principal.$promt_productos.$promt_convesacion;
 
@@ -126,8 +118,9 @@ class WhatsappController extends Controller
                 $entrada=$promt.$msg_body;
                 $text1=$this->responsechat($entrada);//Obtiene respuesta de chatgpt
                 $bandera=Whatsapp::where('Phone',$from)->get();
+
                 if(count($bandera)==1){
-                    $this->enviarmsm($phone_number_id,$from,$text1);//envia mensaje de whatsapp
+                    $this->enviarmsm($phone_number_id,$from,$promt_productos);//envia mensaje de whatsapp
                 }else{
                     $this->enviarmsm($phone_number_id,$from,'Numero no registrado');//envia mensaje de whatsapp
                 }
