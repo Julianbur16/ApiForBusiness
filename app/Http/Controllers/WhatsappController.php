@@ -76,11 +76,33 @@ class WhatsappController extends Controller
         ]);
     }
 
+    public function responsechat($promt){
+        $openaiApiKey = env('OPENAI_API_KEY');
+        $data = array(
+            'model' => 'text-davinci-003', // Especifica el modelo de OpenAI
+            'prompt' => $promt, // Especifica el fragmento de texto que se usará como entrada
+            'max_tokens' => 2100, // Especifica el número máximo de "tokens"
+            'temperature' => 0.5 // Aleatoriedad
+        );
+        $payload = json_encode($data);
+        $ch = curl_init('https://api.openai.com/v1/completions');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json',
+            'Authorization: Bearer '.$openaiApiKey
+        ));
+        $result = curl_exec($ch);
+        curl_close($ch);
+        $resultdecode = json_decode($result);
+        $text1 = $resultdecode->choices[0]->text;
+        return $text1;
+    }
+
     public function webhook(Request $request)
     {
         // Parse the request body from the POST
         $body = $request->all();
-        $openaiApiKey = env('OPENAI_API_KEY');
         $promt='Tu nombre sera NUK y podras dar respuesta a preguntas de cultura general y ofrecer productos de una base de datos en tipo json que te la presentare al final del mensaje, segiras unicamente las sigunetes instrucciones para generar una conversacion:
         PRIMERA INSTRUCCIÓN: si el susuario te saluda tu lo saludaras y solo diras tu nombre, si el usuario no te saluda y te raliza una pregunta de cultura general tu la responderas de manera consisa y corta ademas terminaras tu respuesta preguntado si hay algo mas en lo que puedas ayudar, si el usuario esta interesado en algun producto tu lo consultaras en la base de datos que esta al final del mensaje y sigues la segunda instrucción.
         SEGUNDA INSTRUCCIÓN: si el producto se encuentra en la bese de datos tu responderas unicamente teniendo en cuenta el nombre, la descripción y el precio del producto, no puedes dar por ningun motivo informacion que no se encuentre en la base de datos y finalizas preguntando si quiere adquirir el producto luego sigues la tercera instrucción, si el producto no se encuentra en la base de datos, tu te disculparas y finalizaras tu respuesta preguntado si hay otro producto que le interese, si el usuario te pide armar un combo de productos tu seras capaz de hacerlo unicamente con los productos existentes en la base de datos y finalizara tu respuesta preguntado si quiere adquirir el combo.
@@ -123,37 +145,16 @@ class WhatsappController extends Controller
         if (isset($body['object'])) {
             if (isset($body['entry']) && isset($body['entry'][0]['changes']) && isset($body['entry'][0]['changes'][0]['value']['messages']) && isset($body['entry'][0]['changes'][0]['value']['messages'][0])) {
                 $phone_number_id = $body['entry'][0]['changes'][0]['value']['metadata']['phone_number_id'];
-                $from = $body['entry'][0]['changes'][0]['value']['messages'][0]['from']; // extract the phone number from the webhook payload
-                $msg_body = $body['entry'][0]['changes'][0]['value']['messages'][0]['text']['body']; // extract the message text from the webhook payload
-
-                $data = array(
-                    'model' => 'text-davinci-003', // Especifica el modelo de OpenAI que se utilizará para generar el texto
-                    'prompt' => $promt.$msg_body, // Especifica el fragmento de texto que se usará como entrada para generar el texto
-                    'max_tokens' => 2100, // Especifica el número máximo de "tokens" (palabras o caracteres) que se generarán en la respuesta
-                    'temperature' => 0.5 // Especifica el nivel de "temperatura" para el modelo (0 = sin aleatoriedad, 1 = completamente aleatorio)
-                );
-                        $payload = json_encode($data);
-                        $ch = curl_init('https://api.openai.com/v1/completions');
-                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-                        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                            'Content-Type: application/json',
-                            'Authorization: Bearer '.$openaiApiKey
-                        ));
-                        $result = curl_exec($ch);
-                        curl_close($ch);
-                        $resultdecode = json_decode($result);
-                        $text1 = $resultdecode->choices[0]->text;
-
-                       
-                        $bandera=Whatsapp::where('Phone',$from)->get();
-                        if(count($bandera)==1){
-
-                            $this->enviarmsm($phone_number_id,$from,$text1);
-                        }else{
-                            
-                            $this->enviarmsm($phone_number_id,$from,'Numero no registrado');
-            }
+                $from = $body['entry'][0]['changes'][0]['value']['messages'][0]['from']; // Extrae numero
+                $msg_body = $body['entry'][0]['changes'][0]['value']['messages'][0]['text']['body']; // Extrae mensaje
+                $entrada=$promt.$msg_body;
+                $text1=$this->responsechat($entrada);//Obtiene respuesta de chatgpt
+                $bandera=Whatsapp::where('Phone',$from)->get();
+                if(count($bandera)==1){
+                    $this->enviarmsm($phone_number_id,$from,$text1);//envia mensaje de whatsapp
+                }else{
+                    $this->enviarmsm($phone_number_id,$from,'Numero no registrado');//envia mensaje de whatsapp
+                }
             }
             return response('Success', 200);
         } else {
