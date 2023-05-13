@@ -108,7 +108,7 @@ class WhatsappController extends Controller
                     'json' => [
                         'messaging_product' => 'whatsapp',
                         'to' => $from,
-                        'text' => ['body' => 'Ack: ' . $bandera],
+                        'text' => ['body' => 'Ack: ' . $bandera.ob_get_length()],
                     ],
                 ]);
             }
