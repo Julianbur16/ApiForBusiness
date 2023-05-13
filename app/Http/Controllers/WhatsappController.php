@@ -77,11 +77,25 @@ class WhatsappController extends Controller
         ]);
     }
 
-    public function responsechat($promt){
+    public function responsechat($promt, $msg){
         $openaiApiKey = env('OPENAI_API_KEY');
+        $messages = array(
+            array(
+                'role' => 'system',
+                'content' => $promt
+            )
+        );
+
+        $newMessage = array(
+            'role' => 'user',
+            'content' => $msg
+        );
+        
+        $messages[] = $newMessage;
+
         $data = array(
             'model' => 'text-davinci-003', // Especifica el modelo de OpenAI
-            'prompt' => $promt, // Especifica el fragmento de texto que se usará como entrada
+            'prompt' => $messages, // Especifica el fragmento de texto que se usará como entrada
             'max_tokens' => 2100, // Especifica el número máximo de "tokens"
             'temperature' => 0.5 // Aleatoriedad
         );
@@ -107,16 +121,15 @@ class WhatsappController extends Controller
         $promt_principal = env('MAINPROMT');
         $promt_productos_obj=new ProductController;
         $promt_productos=$promt_productos_obj->index();
-        $promt_convesacion='Usuario: ';
-        $promt=$promt_principal.$promt_productos.$promt_convesacion;
+       
+        $promt=$promt_principal.$promt_productos;
 
         if (isset($body['object'])) {
             if (isset($body['entry']) && isset($body['entry'][0]['changes']) && isset($body['entry'][0]['changes'][0]['value']['messages']) && isset($body['entry'][0]['changes'][0]['value']['messages'][0])) {
                 $phone_number_id = $body['entry'][0]['changes'][0]['value']['metadata']['phone_number_id'];
                 $from = $body['entry'][0]['changes'][0]['value']['messages'][0]['from']; // Extrae numero
                 $msg_body = $body['entry'][0]['changes'][0]['value']['messages'][0]['text']['body']; // Extrae mensaje
-                $entrada=$promt.$msg_body;
-                $text1=$this->responsechat($entrada);//Obtiene respuesta de chatgpt
+                $text1=$this->responsechat($promt,$msg_body);//Obtiene respuesta de chatgpt
                 $bandera=Whatsapp::where('Phone',$from)->get();
 
                 if(count($bandera)==1){
