@@ -103,8 +103,12 @@ class WhatsappController extends Controller
             'model' => 'gpt-3.5-turbo',
             'messages' => [
                 [
-                    'role' => 'user',
-                    'content' => $msg
+                    'role' => 'system',
+                    'content' => $promt
+                ],
+                [
+                    'role'=>'user',
+                    'content'=> $msg
                 ]
             ]
         ];
@@ -119,9 +123,9 @@ class WhatsappController extends Controller
         ));
         $result = curl_exec($ch);
         curl_close($ch);
-        //$resultdecode = json_decode($result);
-        //$text1 = $resultdecode->choices[0]->text;
-        return $result;
+        $resultdecode = json_decode($result);
+        $text1 = $resultdecode->choices[0];
+        return $text1;
     }
 
     public function webhook(Request $request)
