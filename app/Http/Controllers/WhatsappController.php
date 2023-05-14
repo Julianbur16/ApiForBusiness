@@ -124,7 +124,7 @@ class WhatsappController extends Controller
         $result = curl_exec($ch);
         curl_close($ch);
         $resultdecode = json_decode($result);
-        $text1 = $resultdecode['choices'][0]['message']['content'];
+        $text1 = $resultdecode->choices[0]->message->content;
         return $text1;
     }
 
