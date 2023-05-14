@@ -81,17 +81,17 @@ class WhatsappController extends Controller
         $openaiApiKey = env('OPENAI_API_KEY');
         $messages = array(
             array(
-                'role' => 'system',
-                'content' => $promt
+                'role' => 'user',
+                'content' => $promt.$msg
             )
         );
 
-        $newMessage = array(
+        /*$newMessage = array(
             'role' => 'user',
             'content' => $msg
         );
-        
-        $messages[] = $newMessage;
+
+        $messages[] = $newMessage;*/
 
         $data = array(
             'model' => 'text-davinci-003', // Especifica el modelo de OpenAI
