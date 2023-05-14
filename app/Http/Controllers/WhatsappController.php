@@ -99,7 +99,7 @@ class WhatsappController extends Controller
             'max_tokens' => 2100, // Especifica el número máximo de "tokens"
             'temperature' => 0.5 // Aleatoriedad
         );*/
-        $data = [
+        $data = array(
             'model' => 'gpt-3.5-turbo',
             'messages' => [
                 [
@@ -107,9 +107,10 @@ class WhatsappController extends Controller
                     'content' => $msg
                 ]
             ]
-        ];
+                );
         $payload = json_encode($data);
         $ch = curl_init('https://api.openai.com/v1/chat/completions');
+        curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
