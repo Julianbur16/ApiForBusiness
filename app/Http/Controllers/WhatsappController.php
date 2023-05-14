@@ -94,7 +94,7 @@ class WhatsappController extends Controller
         $messages[] = $newMessage;
 
         $data = array(
-            'model' => 'text-davinci-003', // Especifica el modelo de OpenAI
+            'model' => 'gpt-3.5-turbo', // Especifica el modelo de OpenAI
             'messages' => $messages, // Especifica el fragmento de texto que se usará como entrada
             'max_tokens' => 2100, // Especifica el número máximo de "tokens"
             'temperature' => 0.5 // Aleatoriedad
