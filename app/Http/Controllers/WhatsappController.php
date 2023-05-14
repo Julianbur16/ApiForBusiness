@@ -79,14 +79,14 @@ class WhatsappController extends Controller
 
     public function responsechat($promt, $msg){
         $openaiApiKey = env('OPENAI_API_KEY');
-        $messages = array(
+        /*$messages = array(
             array(
                 'role' => 'user',
                 'content' => $promt.$msg
             )
         );
 
-        /*$newMessage = array(
+        $newMessage = array(
             'role' => 'user',
             'content' => $msg
         );
@@ -95,7 +95,7 @@ class WhatsappController extends Controller
 
         $data = array(
             'model' => 'text-davinci-003', // Especifica el modelo de OpenAI
-            'prompt' => $messages, // Especifica el fragmento de texto que se usará como entrada
+            'prompt' => $promt.$msg, // Especifica el fragmento de texto que se usará como entrada
             'max_tokens' => 2100, // Especifica el número máximo de "tokens"
             'temperature' => 0.5 // Aleatoriedad
         );
