@@ -80,6 +80,7 @@ class WhatsappController extends Controller
     public function responsechat($promt, $msg){
         $openaiApiKey = env('OPENAI_API_KEY');
         $messages = session('messages', []);
+
         if (empty($messages)) {
             $newmessages = [
                 [
@@ -103,6 +104,7 @@ class WhatsappController extends Controller
                 $messages = $newmessages; 
                 session(['messages' => $messages]);
         }
+        $messages = session('messages', []);
 
         
 
@@ -136,14 +138,6 @@ class WhatsappController extends Controller
         curl_close($ch);
         $resultdecode = json_decode($result);
         $text1 = $resultdecode->choices[0]->message->content;
-        $newmessages = [
-            [
-                'role'=>'assistant',
-                'content'=> $text1
-                ]
-            ];
-            $messages = $newmessages; 
-            session(['messages' => $messages]);
         return $text1;
     }
 
