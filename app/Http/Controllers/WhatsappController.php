@@ -88,41 +88,23 @@ class WhatsappController extends Controller
                     'content' => $promt
                 ],
                 [
-                    'role'=>'user',
-                    'content'=> $msg
-                    ]
-                ];
-                $messages = $newmessages; 
-                session(['messages' => $messages]);
+                    'role' => 'user',
+                    'content' => $msg
+                ]
+            ];
         } else {
-            $newmessages = [
-                [
-                    'role'=>'user',
-                    'content'=> $msg
-                    ]
-                ];
-                $messages = $newmessages; 
-                session(['messages' => $messages]);
+            $newmessages = $messages;
+            $newmessages[] = [
+                'role' => 'user',
+                'content' => $msg
+            ];
         }
-
         
-
-        /*$newMessage = [
-            'role' => 'user',
-            'content' => $msg
-        ];
-
-        $messages[] = $newMessage;
-
-        $data = array(
-            'model' => 'gpt-3.5-turbo', // Especifica el modelo de OpenAI
-            'messages' => $messages, // Especifica el fragmento de texto que se usará como entrada
-            'max_tokens' => 2100, // Especifica el número máximo de "tokens"
-            'temperature' => 0.5 // Aleatoriedad
-        );*/
+        session(['messages' => $newmessages]);
+        
         $data = [
             'model' => 'gpt-3.5-turbo',
-            'messages' => session('messages', [])
+            'messages' => $newmessages
         ];
         $payload = json_encode($data);
         $ch = curl_init('https://api.openai.com/v1/chat/completions');
