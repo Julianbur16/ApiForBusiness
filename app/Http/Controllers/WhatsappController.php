@@ -104,7 +104,6 @@ class WhatsappController extends Controller
                 $messages = $newmessages; 
                 session(['messages' => $messages]);
         }
-        $messages = session('messages', []);
 
         
 
@@ -123,7 +122,7 @@ class WhatsappController extends Controller
         );*/
         $data = [
             'model' => 'gpt-3.5-turbo',
-            'messages' => $messages
+            'messages' => session('messages', [])
         ];
         $payload = json_encode($data);
         $ch = curl_init('https://api.openai.com/v1/chat/completions');
@@ -146,8 +145,7 @@ class WhatsappController extends Controller
             ];
             $messages = $newmessages; 
             session(['messages' => $messages]);
-            $messages = session('messages', []);
-        return $messages;
+        return session('messages', []);
     }
 
     public function webhook(Request $request)
