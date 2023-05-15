@@ -145,7 +145,7 @@ class WhatsappController extends Controller
             ];
             $messages = $newmessages; 
             session(['messages' => $messages]);
-        return session('messages', []);
+        return $text1;
     }
 
     public function webhook(Request $request)
