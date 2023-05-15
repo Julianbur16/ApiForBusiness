@@ -79,17 +79,21 @@ class WhatsappController extends Controller
 
     public function responsechat($promt, $msg){
         $openaiApiKey = env('OPENAI_API_KEY');
-        /*$messages = array(
-            array(
+        $messages = [
+            [
                 'role' => 'system',
                 'content' => $promt
-            )
-        );
+            ],
+            [
+                'role'=>'user',
+                'content'=> $msg
+                ]
+            ];
 
-        $newMessage = array(
+        /*$newMessage = [
             'role' => 'user',
             'content' => $msg
-        );
+        ];
 
         $messages[] = $newMessage;
 
@@ -101,16 +105,7 @@ class WhatsappController extends Controller
         );*/
         $data = [
             'model' => 'gpt-3.5-turbo',
-            'messages' => [
-                [
-                    'role' => 'system',
-                    'content' => $promt
-                ],
-                [
-                    'role'=>'user',
-                    'content'=> $msg
-                ]
-            ]
+            'messages' => $messages
         ];
         $payload = json_encode($data);
         $ch = curl_init('https://api.openai.com/v1/chat/completions');
