@@ -77,9 +77,9 @@ class WhatsappController extends Controller
         ]);
     }
 
-    public function responsechat($promt, $msg){
+    public function responsechat($promt, $msg, $from){
         $openaiApiKey = env('OPENAI_API_KEY');
-        $messages = cache('messages', []);
+        $messages = cache($from, []);
        
         if (empty($messages)) {
             $newmessages = [
@@ -100,7 +100,7 @@ class WhatsappController extends Controller
             ];
         }
         
-        cache(['messages' => $newmessages]);
+        cache([$from => $newmessages],now()->addMinutes(2));
         
         $data = [
             'model' => 'gpt-3.5-turbo',
@@ -124,7 +124,7 @@ class WhatsappController extends Controller
                 'role' => 'assistant',
                 'content' => $text1
             ];
-            cache(['messages' => $newmessages]);
+            cache([$from => $newmessages],now()->addMinutes(2));
         return $text1;
 
     }
@@ -144,7 +144,7 @@ class WhatsappController extends Controller
                 $phone_number_id = $body['entry'][0]['changes'][0]['value']['metadata']['phone_number_id'];
                 $from = $body['entry'][0]['changes'][0]['value']['messages'][0]['from']; // Extrae numero
                 $msg_body = $body['entry'][0]['changes'][0]['value']['messages'][0]['text']['body']; // Extrae mensaje
-                $text1=$this->responsechat($promt,$msg_body);//Obtiene respuesta de chatgpt
+                $text1=$this->responsechat($promt,$msg_body,$from);//Obtiene respuesta de chatgpt
                 $bandera=Whatsapp::where('Phone',$from)->get();
 
                 if(count($bandera)==1){
