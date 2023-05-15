@@ -124,7 +124,7 @@ class WhatsappController extends Controller
                 'content' => $text1
             ];
             cache(['messages' => $newmessages]);
-        return $payload;
+        return $text1;
 
     }
 
