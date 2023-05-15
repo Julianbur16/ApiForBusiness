@@ -96,7 +96,7 @@ class WhatsappController extends Controller
             $newmessages = $messages;
             $newmessages[] = [
                 'role' => 'user',
-                'content' => $msg
+                'content' => 'reponde teniendo en cuenta tus instrucciones '.$msg
             ];
         }
         
@@ -104,7 +104,8 @@ class WhatsappController extends Controller
         
         $data = [
             'model' => 'gpt-3.5-turbo',
-            'messages' => $newmessages
+            'messages' => $newmessages,
+            'temperature' => 0.1
         ];
         $payload = json_encode($data);
         $ch = curl_init('https://api.openai.com/v1/chat/completions');
