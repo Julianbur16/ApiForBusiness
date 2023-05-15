@@ -80,7 +80,7 @@ class WhatsappController extends Controller
     public function responsechat($promt, $msg){
         $openaiApiKey = env('OPENAI_API_KEY');
         $messages = session('messages', []);
-
+        session(['clave' => 'valor']);
         if (empty($messages)) {
             $newmessages = [
                 [
@@ -125,8 +125,8 @@ class WhatsappController extends Controller
                 'content' => $text1
             ];
             session(['messages' => $newmessages]);
-        return $payload;
-        
+        return session('clave');
+
     }
 
     public function webhook(Request $request)
