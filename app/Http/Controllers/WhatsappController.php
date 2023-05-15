@@ -79,13 +79,20 @@ class WhatsappController extends Controller
 
     public function responsechat($promt, $msg, $from){
         $openaiApiKey = env('OPENAI_API_KEY');
+        $bandera=Whatsapp::where('Phone',$from)->get();
+        $nombre=$bandera->Name;
+        if($nombre == null){
+            $complemento = '';
+        }else{
+            $complemento='el nombre del usuario es '.$nombre;
+        }
         $messages = cache($from, []);
        
         if (empty($messages)) {
             $newmessages = [
                 [
                     'role' => 'system',
-                    'content' => $promt
+                    'content' => $complemento.$promt
                 ],
                 [
                     'role' => 'user',
