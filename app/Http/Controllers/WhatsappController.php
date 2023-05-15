@@ -79,16 +79,32 @@ class WhatsappController extends Controller
 
     public function responsechat($promt, $msg){
         $openaiApiKey = env('OPENAI_API_KEY');
-        $messages = [
-            [
-                'role' => 'system',
-                'content' => $promt
-            ],
-            [
-                'role'=>'user',
-                'content'=> $msg
-                ]
-            ];
+        $messages = session('messages', []);
+        if (empty($messages)) {
+            $newmessages = [
+                [
+                    'role' => 'system',
+                    'content' => $promt
+                ],
+                [
+                    'role'=>'user',
+                    'content'=> $msg
+                    ]
+                ];
+                $messages = $newmessages; 
+                session(['messages' => $messages]);
+        } else {
+            $newmessages = [
+                [
+                    'role'=>'user',
+                    'content'=> $msg
+                    ]
+                ];
+                $messages = $newmessages; 
+                session(['messages' => $messages]);
+        }
+
+        
 
         /*$newMessage = [
             'role' => 'user',
@@ -120,6 +136,14 @@ class WhatsappController extends Controller
         curl_close($ch);
         $resultdecode = json_decode($result);
         $text1 = $resultdecode->choices[0]->message->content;
+        $newmessages = [
+            [
+                'role'=>'assistant',
+                'content'=> $text1
+                ]
+            ];
+            $messages = $newmessages; 
+            session(['messages' => $messages]);
         return $text1;
     }
 
