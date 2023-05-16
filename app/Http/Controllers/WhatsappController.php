@@ -86,7 +86,7 @@ class WhatsappController extends Controller
         }else{
             $complemento='el nombre del usuario es '.$nombre;
         }
-        $messages = cache($from, []);
+        $messages = cache('key', []);
        
         if (empty($messages)) {
             $newmessages = [
@@ -107,7 +107,7 @@ class WhatsappController extends Controller
             ];
         }
         
-        cache([$from => $newmessages],now()->addMinutes(2));
+        cache(['key' => $newmessages]);
         
         $data = [
             'model' => 'gpt-3.5-turbo',
@@ -131,8 +131,8 @@ class WhatsappController extends Controller
                 'role' => 'assistant',
                 'content' => $text1
             ];
-            cache([$from => $newmessages],now()->addMinutes(2));
-        return cache($from);;
+            cache(['key' => $newmessages]);
+        return cache('key');
 
     }
 
