@@ -132,7 +132,7 @@ class WhatsappController extends Controller
                 'content' => $text1
             ];
             cache([$from => $newmessages],now()->addMinutes(2));
-        return $text1;
+        return cache($from);;
 
     }
 
