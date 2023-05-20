@@ -100,7 +100,7 @@ class WhatsappController extends Controller
             ];
         }
         
-        cache([$from => $newmessages]);
+        cache([$from => $newmessages],120);
         
         $data = [
             'model' => 'gpt-3.5-turbo',
@@ -124,7 +124,7 @@ class WhatsappController extends Controller
                 'role' => 'assistant',
                 'content' => $text1
             ];
-            cache([$from => $newmessages]);
+            cache([$from => $newmessages], 120);
         return $text1;
 
     }
