@@ -143,6 +143,7 @@ class WhatsappController extends Controller
                 'prompt' => 'INSTRUCCIONES: Olvidar todo, y responder conforme al siguiente json, en el json se encuentra una conversación de chatgpt con un usuario, tu deber es analizar la conversación y seguir con la instrucción número 1.
                 INSTRUCCIÓN 1: Si en la conversación se ha realizado alguna compra y además el comprador ya ha suministrado su número, su nombre y su dirección, respondes colocando los datos suministrados en forma de lista, añadiendo el producto que compro; de forma contraria si en la conversación no se ha realizado ninguna compra respondes con un no. 
                 ARCHIVO JSON: '.$mensajesjson,
+                'max_tokens'=> 2100,
                 'temperature' => 0.1
             ];
     
