@@ -146,7 +146,7 @@ class WhatsappController extends Controller
             ];
     
             $payload1 = json_encode($data1);
-            $ch1 = curl_init('https://api.openai.com/v1/chat/completions');
+            $ch1 = curl_init('https://api.openai.com/v1/completions');
             curl_setopt($ch1, CURLOPT_POST, true);
             curl_setopt($ch1, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch1, CURLOPT_POSTFIELDS, $payload1);
