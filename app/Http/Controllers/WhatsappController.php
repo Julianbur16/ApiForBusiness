@@ -140,7 +140,7 @@ class WhatsappController extends Controller
 
             $data1 = [
                 'model' => 'text-davinci-003',
-                'prompt' => 'INSTRUCCIONES: Olvidar todo, y responder conforme al siguiente json, en el json se encuentra una conversación de chatgpt con un usuario, tu deber es analizar la conversación y responder si, si se confirmó un pedido y el usuario ingreso su número de celular, nombre, y dirección donde llegara el pedido, de lo contrario contesta con NO.  
+                'prompt' => 'INSTRUCCIONES: Olvidar todo, y responder conforme al siguiente json, en el json se encuentra una conversación de chatgpt con un usuario, tu deber es analizar la conversación y responder si y los datos de la compra, si se confirmó un pedido y ademas el usuario ha ingresado su número de celular, nombre, y dirección donde llegara el pedido, de lo contrario contesta con NO.  
                 ARCHIVO JSON: '.$mensajesjson,
                 'temperature' => 0.1
             ];
@@ -157,11 +157,11 @@ class WhatsappController extends Controller
 
         $resultado = curl_exec($ch1);
         curl_close($ch1);
-        //$resultadodecode = json_decode($resultado);
-        //$resultado_verificar = $resultadodecode->choices[0]->message->content;
+        $resultadodecode = json_decode($resultado);
+        $resultado_verificar = $resultadodecode->choices[0]->text;
             
 
-        return ['text1'=>$text1,'resultado'=>$resultado];
+        return ['text1'=>$text1,'resultado'=>$resultado_verificar];
 
     }
 
