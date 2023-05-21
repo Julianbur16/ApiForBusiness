@@ -129,38 +129,6 @@ class WhatsappController extends Controller
 
 
             //VERIFICAR SI EXISTE UN PEDIDO EN LA CONVERSACIÓN
-            /*
-            $mensajesjson=json_encode($newmessages);
-            $newmessages1 = [
-                [
-                    'role' => 'system',
-                    'content' => 'INSTRUCCIONES: Olvidar todo, y responder conforme al siguiente json, en el json se encuentra una conversación de chatgpt con un usuario, tu deber es analizar la conversación y responder si, si se confirmó un pedido y el usuario ingreso su número de celular, nombre, y dirección donde llegara el pedido, de lo contrario contesta con NO.  
-                    ARCHIVO JSON: '.$mensajesjson
-                ]
-            ];
-
-            $data1 = [
-                'model' => 'text-davinci-003',
-                'prompt' => 'STRING:'.$msg.'
-                INSTRUCCIONES: Olvidar todo,y analisar el anterior string, si en el string existe el dato de algún número de celular, responde con el mismo string de entrada, de lo contrario en los demas casos solo responde con la palabra no',
-                'max_tokens'=> 2100,
-                'temperature' => 0
-            ];
-    
-            $payload1 = json_encode($data1);
-            $ch1 = curl_init('https://api.openai.com/v1/completions');
-            curl_setopt($ch1, CURLOPT_POST, true);
-            curl_setopt($ch1, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch1, CURLOPT_POSTFIELDS, $payload1);
-            curl_setopt($ch1, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json',
-            'Authorization: Bearer '.$openaiApiKey
-        ));
-
-        $resultado = curl_exec($ch1);
-        curl_close($ch1);
-        $resultadodecode = json_decode($resultado);
-        $resultado_verificar = $resultadodecode->choices[0]->text;*/
         if (preg_match("/3+[0123]+\d{8}/", $msg)) {
             $resultado_verificar= $msg;
         } else {
@@ -186,12 +154,14 @@ class WhatsappController extends Controller
                 $phone_number_id = $body['entry'][0]['changes'][0]['value']['metadata']['phone_number_id'];
                 $from = $body['entry'][0]['changes'][0]['value']['messages'][0]['from']; // Extrae numero
                 $msg_body = $body['entry'][0]['changes'][0]['value']['messages'][0]['text']['body']; // Extrae mensaje
-                $text1=$this->responsechat($promt,$msg_body,$from);//Obtiene respuesta de chatgpt
                 $bandera=Whatsapp::where('Phone',$from)->get();
 
                 if(count($bandera)==1){
+                    $text1=$this->responsechat($promt,$msg_body,$from);//Obtiene respuesta de chatgpt
                     $this->enviarmsm($phone_number_id,$from,$text1['text1']);//envia mensaje de whatsapp
-                    $this->enviarmsm($phone_number_id,'573178957381',$text1['resultado']);//envia mensaje de whatsapp
+                    if($text1['resultado'] != 'No existe compra'){
+                    $this->enviarmsm($phone_number_id,'573182084130',$text1['resultado']);//envia mensaje de whatsapp
+                    }
                 }else{
                     $this->enviarmsm($phone_number_id,$from,'Numero no registrado');//envia mensaje de whatsapp
                 }
