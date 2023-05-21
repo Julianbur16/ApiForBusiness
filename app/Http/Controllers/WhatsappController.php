@@ -129,6 +129,7 @@ class WhatsappController extends Controller
 
 
             //VERIFICAR SI EXISTE UN PEDIDO EN LA CONVERSACIÓN
+            $mensajesjson=json_encode($newmessages);
             $newmessages1 = [
                 [
                     'role' => 'system',
@@ -136,7 +137,7 @@ class WhatsappController extends Controller
                 ],
                 [
                     'role' => 'user',
-                    'content' => 'hola'
+                    'content' => 'conversación: '.$mensajesjson
                 ]
             ];
 
