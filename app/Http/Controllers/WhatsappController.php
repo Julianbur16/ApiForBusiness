@@ -136,7 +136,7 @@ class WhatsappController extends Controller
                 ],
                 [
                     'role' => 'user',
-                    'content' => $newmessages
+                    'content' => 'hola'
                 ]
             ];
 
