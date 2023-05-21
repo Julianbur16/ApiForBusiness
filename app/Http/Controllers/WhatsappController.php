@@ -141,7 +141,7 @@ class WhatsappController extends Controller
             $data1 = [
                 'model' => 'text-davinci-003',
                 'prompt' => 'STRING:'.$msg.'
-                INSTRUCCIONES: Olvidar todo, y responder conforme al anterior string, si en el string existen datos como número de celular, dirección o nombres de persona, lista y responde con esta información, de lo contrario responde con un no',
+                INSTRUCCIONES: Olvidar todo, y responder conforme al anterior string, si en el string existen datos como número de celular, nombres de persona o algún producto, lista y responde con esta información, de lo contrario responde con un no',
                 'max_tokens'=> 2100,
                 'temperature' => 0.1
             ];
