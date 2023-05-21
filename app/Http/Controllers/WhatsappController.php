@@ -130,17 +130,18 @@ class WhatsappController extends Controller
 
             //VERIFICAR SI EXISTE UN PEDIDO EN LA CONVERSACIÓN
             $mensajesjson=json_encode($newmessages);
-            $newmessages1 = [
+            /*$newmessages1 = [
                 [
                     'role' => 'system',
                     'content' => 'INSTRUCCIONES: Olvidar todo, y responder conforme al siguiente json, en el json se encuentra una conversación de chatgpt con un usuario, tu deber es analizar la conversación y responder si, si se confirmó un pedido y el usuario ingreso su número de celular, nombre, y dirección donde llegara el pedido, de lo contrario contesta con NO.  
                     ARCHIVO JSON: '.$mensajesjson
                 ]
-            ];
+            ];*/
 
             $data1 = [
-                'model' => 'gpt-3.5-turbo',
-                'messages' => $newmessages1,
+                'model' => 'text-davinci-003',
+                'prompt' => 'INSTRUCCIONES: Olvidar todo, y responder conforme al siguiente json, en el json se encuentra una conversación de chatgpt con un usuario, tu deber es analizar la conversación y responder si, si se confirmó un pedido y el usuario ingreso su número de celular, nombre, y dirección donde llegara el pedido, de lo contrario contesta con NO.  
+                ARCHIVO JSON: '.$mensajesjson,
                 'temperature' => 0.1
             ];
     
