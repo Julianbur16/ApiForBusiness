@@ -127,15 +127,7 @@ class WhatsappController extends Controller
             ];
             cache([$from => $newmessages], 120);
 
-
-            //VERIFICAR SI EXISTE UN PEDIDO EN LA CONVERSACIÓN
-        if (preg_match("/3+[0123]+\d{8}/", $msg)) {
-            $resultado_verificar= $msg;
-        } else {
-            $resultado_verificar= 'No existe compra';
-        }
-
-        return ['text1'=>$text1,'resultado'=>$resultado_verificar];
+        return $text1;
 
     }
 
@@ -143,25 +135,50 @@ class WhatsappController extends Controller
     {
         // Parse the request body from the POST
         $body = $request->all();
-        $promt_principal = env('MAINPROMT');
-        $promt_productos_obj=new ProductController;
-        $promt_productos=$promt_productos_obj->index();
+        $promt = env('MAINPROMT');
+        //$promt_productos_obj=new ProductController;
+        //$promt_productos=$promt_productos_obj->index();
        
-        $promt=$promt_principal.$promt_productos;
-
         if (isset($body['object'])) {
             if (isset($body['entry']) && isset($body['entry'][0]['changes']) && isset($body['entry'][0]['changes'][0]['value']['messages']) && isset($body['entry'][0]['changes'][0]['value']['messages'][0])) {
                 $phone_number_id = $body['entry'][0]['changes'][0]['value']['metadata']['phone_number_id'];
                 $from = $body['entry'][0]['changes'][0]['value']['messages'][0]['from']; // Extrae numero
                 $msg_body = $body['entry'][0]['changes'][0]['value']['messages'][0]['text']['body']; // Extrae mensaje
                 $bandera=Whatsapp::where('Phone',$from)->get();
+                
 
                 if(count($bandera)==1){
-                    $text1=$this->responsechat($promt,$msg_body,$from);//Obtiene respuesta de chatgpt
-                    $this->enviarmsm($phone_number_id,$from,$text1['text1']);//envia mensaje de whatsapp
-                    if($text1['resultado'] != 'No existe compra'){
-                    $this->enviarmsm($phone_number_id,'573182084130',$text1['resultado']);//envia mensaje de whatsapp
+                    $compra=0;
+                    $producto='';
+                    if (preg_match("/^[mM]{1}[oO]{1}[tT]{1}[Oo]{1}$/", $msg_body)) {
+                        $compra=1;
+                        $producto='Moto taxi';
+                        $this->enviarmsm($phone_number_id,$from,'Tu pedido de '.$producto. 'se realizo exitosamente en un momento nos comunicaremos contigo');//envia mensaje de whatsapp
+                    } 
+
+                    if (preg_match("/^[Dd]{1}[Oo]{1}[Mm]{1}[Ii]{1}[Cc]{1}[Ii]{1}[Ll]{1}[Ii]{1}([Oo]{1}|[Oo]{1}[Ss]{1})$/", $msg_body)) {
+                        $compra=1;
+                        $producto='domicilio';
+                        $this->enviarmsm($phone_number_id,$from,'Tu pedido de '.$producto. 'se realizo exitosamente en un momento nos comunicaremos contigo');//envia mensaje de whatsapp
                     }
+
+                    if (preg_match("/^[Aa]{1}[Ss]{1}[Ee]{1}[Ss]{1}[Oo]{1}[Rr]{1}[Ii]{1}([Aa]{1}|[Aa]{1}[Ss]{1})$/", $msg_body)) {
+                        $compra=1;
+                        $producto='asesoria';
+                        $this->enviarmsm($phone_number_id,$from,'Tu servicio de '.$producto. 'se registro exitosamente en un momento nos comunicaremos contigo');//envia mensaje de whatsapp
+                    }
+
+                    if (preg_match("/^[Tt]{1}[Ii]{1}[Ee]{1}[Nn]{1}[Dd]{1}[Aa]{1}$/", $msg_body)) {
+                        $compra=1;
+                        $producto='tienda';
+                        $this->enviarmsm($phone_number_id,$from,'aqui debe mostrar lista de productos');//envia mensaje de whatsapp
+                    }
+
+                    if($compra==0){
+                    $text1=$this->responsechat($promt,$msg_body,$from);//Obtiene respuesta de chatgpt
+                    $this->enviarmsm($phone_number_id,$from,$text1);//envia mensaje de whatsapp
+                    }
+                   
                 }else{
                     $this->enviarmsm($phone_number_id,$from,'Numero no registrado');//envia mensaje de whatsapp
                 }
