@@ -21,8 +21,8 @@ class ProductController extends Controller
      */
     public function indexenumerator(){
         $products=product::all();
-        $productsenumerate=$products->pluck('Name')->map(function ($Name, $indice) {
-            return ($indice + 1) . ". " . $Name;
+        $productsenumerate=$products->pluck('Name','Price')->map(function ($Name, $Price,$indice) {
+            return ($indice + 1) . ". " . $Name . "---------". $Price;
         })->implode(PHP_EOL);
         return "Productos:\n" .$productsenumerate;
 
