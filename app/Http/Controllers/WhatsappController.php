@@ -6,6 +6,7 @@ use App\Models\Whatsapp;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use App\Http\Controllers\ProductController;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class WhatsappController extends Controller 
@@ -171,11 +172,20 @@ class WhatsappController extends Controller
                     if (preg_match("/^[Tt]{1}[Ii]{1}[Ee]{1}[Nn]{1}[Dd]{1}[Aa]{1}$/", $msg_body)) {
                         $compra=1;
                         $producto='tienda';
+                        $status = cache($from.'t', 'true');
                         $lista_productos_obj=new ProductController;
                         $lista_productos=$lista_productos_obj->indexenumerator();
                         $this->enviarmsm($phone_number_id,$from,$lista_productos);//envia mensaje de whatsapp
                     }
-
+                    if(cache::has($from.'t')){
+                        $compra=1;
+                        if($msg_body == '1'){
+                            $this->enviarmsm($phone_number_id,$from,'compra exitosa');//envia mensaje de whatsapp 
+                            Cache::forget('nombre_variable');
+                        }else{
+                            $this->enviarmsm($phone_number_id,$from,'Digito invalido');//envia mensaje de whatsapp 
+                        }
+                    }
                     if($compra==0){
                     $text1=$this->responsechat($promt,$msg_body,$from);//Obtiene respuesta de chatgpt
                     $this->enviarmsm($phone_number_id,$from,$text1);//envia mensaje de whatsapp
