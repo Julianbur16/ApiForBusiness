@@ -171,7 +171,9 @@ class WhatsappController extends Controller
                     if (preg_match("/^[Tt]{1}[Ii]{1}[Ee]{1}[Nn]{1}[Dd]{1}[Aa]{1}$/", $msg_body)) {
                         $compra=1;
                         $producto='tienda';
-                        $this->enviarmsm($phone_number_id,$from,'aqui debe mostrar lista de productos');//envia mensaje de whatsapp
+                        $lista_productos_obj=new ProductController;
+                        $lista_productos=$lista_productos_obj->indexenumerator();
+                        $this->enviarmsm($phone_number_id,$from,$lista_productos);//envia mensaje de whatsapp
                     }
 
                     if($compra==0){

@@ -19,6 +19,15 @@ class ProductController extends Controller
     /**
      * Show the form for creating a new resource.
      */
+    public function indexenumerator(){
+        $products=product::all();
+        $productsenumerate=$products->pluck('Name')->map(function ($Name, $indice) {
+            return ($indice + 1) . ". " . $Name;
+        })->implode(PHP_EOL);
+        return "Productos:\n" .$productsenumerate;
+
+    }
+
     public function create()
     {
         //
