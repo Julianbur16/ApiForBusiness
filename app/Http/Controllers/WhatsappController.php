@@ -192,7 +192,7 @@ class WhatsappController extends Controller
                         $compra=1;
                         $producto='Moto taxi';
                         $confirmation=new BoxController;
-                        $status_confirmation=$confirmation->storeforwhatsapp($from, $bandera->Profession,$producto);
+                        $status_confirmation=$confirmation->storeforwhatsapp($from, 'mecatronica',$producto);
                         if($status_confirmation==true){
                             $this->enviarmsm($phone_number_id,$from,'Tu pedido de '.$producto. 'se realizo exitosamente en un momento nos comunicaremos contigo');//envia mensaje de whatsapp
                         }else{
