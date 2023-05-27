@@ -168,14 +168,19 @@ class WhatsappController extends Controller
                         $this->enviarmsm($phone_number_id,$from,'Tu servicio de '.$producto. 'se registro exitosamente en un momento nos comunicaremos contigo');//envia mensaje de whatsapp
                     }
 
+                    if(cache($from.'t')=='true'){
+                        $compra=1;
+                        $this->enviarmsm($phone_number_id,$from,'hola');//envia mensaje de whatsapp
+                    }
+                    
                     if (preg_match("/^[Tt]{1}[Ii]{1}[Ee]{1}[Nn]{1}[Dd]{1}[Aa]{1}$/", $msg_body)) {
                         $compra=1;
                         $producto='tienda';
-                        $status = cache('t', 'hola');
-                        cache(['t' => 'hola'], 180);
+                        $status = cache($from.'t', 'true');
+                        cache([$from.'t' => 'true'], 180);
                         $lista_productos_obj=new ProductController;
                         $lista_productos=$lista_productos_obj->indexenumerator();
-                        $this->enviarmsm($phone_number_id,$from,cache('t'));//envia mensaje de whatsapp
+                        $this->enviarmsm($phone_number_id,$from,$lista_productos);//envia mensaje de whatsapp
                     }
                    
                     if($compra==0){
