@@ -34,12 +34,23 @@ class BoxController extends Controller
             $table->string('Carrera')->nullable();
             $table->string('Producto');
         */
+        /*
         $boxes=new box();
         $boxes->Celular=$request->Celular;
         $boxes->Carrera=$request->Carrera;
         $boxes->Producto=$request->Producto;
         $boxes->save();
         return response()->json($boxes);
+        */
+    }
+
+    public function storeforwhatsapp(string $phone,string $chose,string $product){
+        $boxes=new box();
+        $boxes->Celular=$phone;
+        $boxes->Carrera=$chose;
+        $boxes->Producto=$product;
+        $boxes->save();
+        return true;
     }
 
     /**
@@ -74,6 +85,7 @@ class BoxController extends Controller
             $table->string('Carrera')->nullable();
             $table->string('Producto');
         */
+        /*
         $box->Celular=$request->Celular;
         $box->Carrera=$request->Carrera;
         $box->Producto=$request->Producto;
@@ -84,6 +96,7 @@ class BoxController extends Controller
         ];
 
         return response()->json($data);
+        */
     }
 
     /**

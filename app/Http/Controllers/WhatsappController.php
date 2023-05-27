@@ -191,7 +191,15 @@ class WhatsappController extends Controller
                     if (preg_match("/^[mM]{1}[oO]{1}[tT]{1}[Oo]{1}$/", $msg_body)) {
                         $compra=1;
                         $producto='Moto taxi';
-                        $this->enviarmsm($phone_number_id,$from,'Tu pedido de '.$producto. 'se realizo exitosamente en un momento nos comunicaremos contigo');//envia mensaje de whatsapp
+                        $confirmation=new BoxController;
+                        $status_confirmation=$confirmation->storeforwhatsapp($from, $bandera->Profession,$producto);
+                        if($status_confirmation==true){
+                            $this->enviarmsm($phone_number_id,$from,'Tu pedido de '.$producto. 'se realizo exitosamente en un momento nos comunicaremos contigo');//envia mensaje de whatsapp
+                        }else{
+                            $this->enviarmsm($phone_number_id,$from,'Ha ocurrido un error intenta nuevamente en unos segundos');//envia mensaje de whatsapp
+                        }
+                        
+
                     } 
 
                     if (preg_match("/^[Dd]{1}[Oo]{1}[Mm]{1}[Ii]{1}[Cc]{1}[Ii]{1}[Ll]{1}[Ii]{1}([Oo]{1}|[Oo]{1}[Ss]{1})$/", $msg_body)) {
