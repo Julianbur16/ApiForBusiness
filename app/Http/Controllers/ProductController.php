@@ -38,9 +38,17 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+         /*
+       $table->string('Name');
+            $table->string('Description');
+            $table->string('Price');
+            $table->string('Kind');
+            $table->string('Availability');
+       */
     
         $products=new product();
         $products->Name=$request->Name;
+        $products->Description=$request->Description;
         $products->Price=$request->Price;
         $products->Kind=$request->Kind;
         $products->Availability=$request->Availability;
@@ -76,8 +84,15 @@ class ProductController extends Controller
      */
     public function update(Request $request, product $product)
     {
-       
+       /*
+       $table->string('Name');
+            $table->string('Description');
+            $table->string('Price');
+            $table->string('Kind');
+            $table->string('Availability');
+       */
         $product->Name=$request->Name;
+        $product->Description=$request->Description;
         $product->Price=$request->Price;
         $product->Kind=$request->Kind;
         $product->Availability=$request->Availability;
