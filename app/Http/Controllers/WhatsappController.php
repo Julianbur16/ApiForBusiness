@@ -174,18 +174,9 @@ class WhatsappController extends Controller
                         $status = cache($from.'t', 'true');
                         $lista_productos_obj=new ProductController;
                         $lista_productos=$lista_productos_obj->indexenumerator();
-                        $this->enviarmsm($phone_number_id,$from,$lista_productos);//envia mensaje de whatsapp
+                        $this->enviarmsm($phone_number_id,$from,cache($from.'t'));//envia mensaje de whatsapp
                     }
-                    $this->enviarmsm($phone_number_id,$from,cache($from.'t'));//envia mensaje de whatsapp 
-                    if(cache($from.'t') == 'true'){
-                        $compra=1;
-                        if($msg_body == '1'){
-                            $this->enviarmsm($phone_number_id,$from,'compra exitosa');//envia mensaje de whatsapp 
-                
-                        }else{
-                            $this->enviarmsm($phone_number_id,$from,'Digito invalido');//envia mensaje de whatsapp 
-                        }
-                    }
+                   
                     if($compra==0){
                     $text1=$this->responsechat($promt,$msg_body,$from);//Obtiene respuesta de chatgpt
                     $this->enviarmsm($phone_number_id,$from,$text1);//envia mensaje de whatsapp
