@@ -172,6 +172,7 @@ class WhatsappController extends Controller
                         $compra=1;
                         $producto='tienda';
                         $status = cache('t', 'hola');
+                        cache(['t' => 'hola'], 180);
                         $lista_productos_obj=new ProductController;
                         $lista_productos=$lista_productos_obj->indexenumerator();
                         $this->enviarmsm($phone_number_id,$from,cache('t'));//envia mensaje de whatsapp
