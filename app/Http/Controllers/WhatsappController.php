@@ -6,7 +6,6 @@ use App\Models\Whatsapp;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use App\Http\Controllers\ProductController;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class WhatsappController extends Controller 
@@ -177,11 +176,11 @@ class WhatsappController extends Controller
                         $lista_productos=$lista_productos_obj->indexenumerator();
                         $this->enviarmsm($phone_number_id,$from,$lista_productos);//envia mensaje de whatsapp
                     }
-                    if(cache::has($from.'t')){
+                    if(cache($from.'t') == 'true'){
                         $compra=1;
                         if($msg_body == '1'){
                             $this->enviarmsm($phone_number_id,$from,'compra exitosa');//envia mensaje de whatsapp 
-                            Cache::forget('nombre_variable');
+                
                         }else{
                             $this->enviarmsm($phone_number_id,$from,'Digito invalido');//envia mensaje de whatsapp 
                         }
