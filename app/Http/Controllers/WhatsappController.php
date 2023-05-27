@@ -170,7 +170,12 @@ class WhatsappController extends Controller
 
                     if(cache($from.'t')=='true'){
                         $compra=1;
-                        $this->enviarmsm($phone_number_id,$from,'hola');//envia mensaje de whatsapp
+                        if($msg_body=='1'){
+                        $this->enviarmsm($phone_number_id,$from,'Se ha realizado exitosamente su compra');//envia mensaje de whatsapp
+                        cache([$from.'t' => 'false'], 180);
+                        }else{
+                            $this->enviarmsm($phone_number_id,$from,'Número invalido');//envia mensaje de whatsapp  
+                        }
                     }
                     
                     if (preg_match("/^[Tt]{1}[Ii]{1}[Ee]{1}[Nn]{1}[Dd]{1}[Aa]{1}$/", $msg_body)) {
