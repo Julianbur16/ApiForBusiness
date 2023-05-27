@@ -38,7 +38,15 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+    
+        $products=new product();
+        $products->Name=$request->Name;
+        $products->Price=$request->Price;
+        $products->Kind=$request->Kind;
+        $products->Availability=$request->Availability;
+        $products->save();
+        return response()->json($products);
+
     }
 
     /**
@@ -46,7 +54,13 @@ class ProductController extends Controller
      */
     public function show(product $product)
     {
-        //
+        $products=product :: find($product);
+        if($products != null){
+            return response()->json($products);
+        }else{
+            $data=["message"=>"cliente no existe"];
+            return response()->json($data);
+        }
     }
 
     /**
@@ -62,7 +76,19 @@ class ProductController extends Controller
      */
     public function update(Request $request, product $product)
     {
-        //
+       
+        $product->Name=$request->Name;
+        $product->Price=$request->Price;
+        $product->Kind=$request->Kind;
+        $product->Availability=$request->Availability;
+        $product->save();
+        $data=[
+            "message"=>"client update successfully",
+            "client"=>"$product"
+        ];
+
+        return response()->json($data);
+
     }
 
     /**
@@ -70,6 +96,9 @@ class ProductController extends Controller
      */
     public function destroy(product $product)
     {
-        //
+        $products=product ::find($product->id);
+        $products->delete();
+        $data=["message"=>"client delete successfully"];
+        return response()->json($data);
     }
 }
