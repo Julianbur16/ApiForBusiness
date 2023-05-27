@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BoxController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\WhatsappController;
 use Illuminate\Http\Request;
@@ -34,3 +35,9 @@ Route::delete('whatsapps/{whatsapp}',[WhatsappController::class, 'destroy']);
 
 Route::post('/webhook', [WhatsappController::class, 'webhook']);
 Route::get('/webhook', [WhatsappController::class, 'verify']);
+
+Route::get('boxes',[BoxController::class, 'index']);
+Route::post('boxes',[BoxController::class, 'store']);
+Route::get('boxes/{box}',[BoxController::class, 'show']);
+Route::put('boxes/{box}',[BoxController::class, 'update']);
+Route::delete('boxes/{box}',[BoxController::class, 'destroy']);
