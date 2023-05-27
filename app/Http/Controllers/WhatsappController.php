@@ -15,7 +15,8 @@ class WhatsappController extends Controller
      */
     public function index()
     {
-        //
+        $whatsapps=whatsapp::all();
+        return response()->json($whatsapps);
     }
 
     /**
@@ -31,7 +32,19 @@ class WhatsappController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        /*
+        $table->string('Phone')->unique();
+            $table->string('Profession')->nullable();
+            $table->string('Name')->nullable();
+            $table->string('City')->nullable();
+        */
+        $whatsapps=new Whatsapp();
+        $whatsapps->Phone=$request->Phone;
+        $whatsapps->Profession=$request->Profession;
+        $whatsapps->Name=$request->Name;
+        $whatsapps->City=$request->City;
+        $whatsapps->save();
+        return response()->json($whatsapps);
     }
 
     /**
@@ -39,7 +52,13 @@ class WhatsappController extends Controller
      */
     public function show(Whatsapp $whatsapp)
     {
-        //
+        $whatsapps=whatsapp :: find($whatsapp);
+        if($whatsapps != null){
+            return response()->json($whatsapps);
+        }else{
+            $data=["message"=>"cliente no existe"];
+            return response()->json($data);
+        }
     }
 
     /**
@@ -55,7 +74,23 @@ class WhatsappController extends Controller
      */
     public function update(Request $request, Whatsapp $whatsapp)
     {
-        //
+        /* 
+        $table->string('Phone')->unique();
+            $table->string('Profession')->nullable();
+            $table->string('Name')->nullable();
+            $table->string('City')->nullable();
+        */
+        $whatsapp->Phone=$request->Phone;
+        $whatsapp->Profession=$request->Profession;
+        $whatsapp->Name=$request->Name;
+        $whatsapp->City=$request->City;
+        $whatsapp->save();
+        $data=[
+            "message"=>"client update successfully",
+            "client"=>"$whatsapp"
+        ];
+
+        return response()->json($data);
     }
 
     /**
@@ -63,7 +98,10 @@ class WhatsappController extends Controller
      */
     public function destroy(Whatsapp $whatsapp)
     {
-        //
+        $whatsapps=whatsapp ::find($whatsapp->id);
+        $whatsapps->delete();
+        $data=["message"=>"client delete successfully"];
+        return response()->json($data);
     }
 
     public function enviarmsm(string $phone_number_id, string $from, string $text){
