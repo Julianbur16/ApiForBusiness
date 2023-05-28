@@ -183,7 +183,7 @@ class WhatsappController extends Controller
                 $from = $body['entry'][0]['changes'][0]['value']['messages'][0]['from']; // Extrae numero
                 $msg_body = $body['entry'][0]['changes'][0]['value']['messages'][0]['text']['body']; // Extrae mensaje
                 $bandera=Whatsapp::where('Phone',$from)->get();
-                $profession = $bandera[0]->Profession;;
+                $profession = $bandera[0]->Profession;
 
                 if(count($bandera)==1){
                     $compra=0;
@@ -230,13 +230,14 @@ class WhatsappController extends Controller
                         $compra=1;
                         $theproduct=new ProductController;
                         $productend=$theproduct->getbyid($msg_body);
-                        $this->enviarmsm($phone_number_id,$from,$productend);//envia mensaje de whatsapp
-                        /*if($msg_body=='1'){
-                        $this->enviarmsm($phone_number_id,$from,'Se ha realizado exitosamente su compra');//envia mensaje de whatsapp
-                        cache([$from.'t' => 'false'], 180);
+                        if($productend != 'false'){
+                            $productofinal = $productend[0]->Name;
+                            $status_confirmation=$confirmation->storeforwhatsapp($from, $profession,$productofinal);
+                            $this->enviarmsm($phone_number_id,$from,'Se ha realizado exitosamente su compra');//envia mensaje de whatsapp
+                            cache([$from.'t' => 'false'], 180);
                         }else{
                             $this->enviarmsm($phone_number_id,$from,'Número invalido');//envia mensaje de whatsapp  
-                        }*/
+                        }
                     }
                     
                     if (preg_match("/^[Tt]{1}[Ii]{1}[Ee]{1}[Nn]{1}[Dd]{1}[Aa]{1}$/", $msg_body)) {
