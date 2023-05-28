@@ -192,10 +192,9 @@ class WhatsappController extends Controller
                         $compra=1;
                         $producto='Moto taxi';
                         $confirmation=new BoxController;
-                        $status_confirmation=$confirmation->storeforwhatsapp($from, 'mecatronica',$producto);
+                        $status_confirmation=$confirmation->storeforwhatsapp($from, $profession,$producto);
                         if($status_confirmation==true){
-                            /*$this->enviarmsm($phone_number_id,$from,'Tu pedido de '.$producto. 'se realizo exitosamente en un momento nos comunicaremos contigo');//envia mensaje de whatsapp*/
-                            $this->enviarmsm($phone_number_id,$from,$profession);//envia mensaje de whatsapp
+                            $this->enviarmsm($phone_number_id,$from,'Tu pedido de '.$producto. 'se realizo exitosamente en un momento nos comunicaremos contigo');//envia mensaje de whatsapp
                         }else{
                             $this->enviarmsm($phone_number_id,$from,'Ha ocurrido un error intenta nuevamente en unos segundos');//envia mensaje de whatsapp
                         }
@@ -205,24 +204,39 @@ class WhatsappController extends Controller
 
                     if (preg_match("/^[Dd]{1}[Oo]{1}[Mm]{1}[Ii]{1}[Cc]{1}[Ii]{1}[Ll]{1}[Ii]{1}([Oo]{1}|[Oo]{1}[Ss]{1})$/", $msg_body)) {
                         $compra=1;
-                        $producto='domicilio';
-                        $this->enviarmsm($phone_number_id,$from,'Tu pedido de '.$producto. 'se realizo exitosamente en un momento nos comunicaremos contigo');//envia mensaje de whatsapp
+                        $producto='Domicilio';
+                        $confirmation=new BoxController;
+                        $status_confirmation=$confirmation->storeforwhatsapp($from, $profession,$producto);
+                        if($status_confirmation==true){
+                            $this->enviarmsm($phone_number_id,$from,'Tu pedido de '.$producto. 'se realizo exitosamente en un momento nos comunicaremos contigo');//envia mensaje de whatsapp
+                        }else{
+                            $this->enviarmsm($phone_number_id,$from,'Ha ocurrido un error intenta nuevamente en unos segundos');//envia mensaje de whatsapp
+                        }
                     }
 
                     if (preg_match("/^[Aa]{1}[Ss]{1}[Ee]{1}[Ss]{1}[Oo]{1}[Rr]{1}[Ii]{1}([Aa]{1}|[Aa]{1}[Ss]{1})$/", $msg_body)) {
                         $compra=1;
                         $producto='asesoria';
-                        $this->enviarmsm($phone_number_id,$from,'Tu servicio de '.$producto. 'se registro exitosamente en un momento nos comunicaremos contigo');//envia mensaje de whatsapp
+                        $confirmation=new BoxController;
+                        $status_confirmation=$confirmation->storeforwhatsapp($from, $profession,$producto);
+                        if($status_confirmation==true){
+                            $this->enviarmsm($phone_number_id,$from,'Tu servicio de '.$producto. 'se registro exitosamente en un momento nos comunicaremos contigo');//envia mensaje de whatsapp
+                        }else{
+                            $this->enviarmsm($phone_number_id,$from,'Ha ocurrido un error intenta nuevamente en unos segundos');//envia mensaje de whatsapp
+                        }
                     }
 
                     if(cache($from.'t')=='true'){
                         $compra=1;
-                        if($msg_body=='1'){
+                        $theproduct=new ProductController;
+                        $productend=$theproduct->getbyid($msg_body);
+                        $this->enviarmsm($phone_number_id,$from,$productend);//envia mensaje de whatsapp
+                        /*if($msg_body=='1'){
                         $this->enviarmsm($phone_number_id,$from,'Se ha realizado exitosamente su compra');//envia mensaje de whatsapp
                         cache([$from.'t' => 'false'], 180);
                         }else{
                             $this->enviarmsm($phone_number_id,$from,'Número invalido');//envia mensaje de whatsapp  
-                        }
+                        }*/
                     }
                     
                     if (preg_match("/^[Tt]{1}[Ii]{1}[Ee]{1}[Nn]{1}[Dd]{1}[Aa]{1}$/", $msg_body)) {

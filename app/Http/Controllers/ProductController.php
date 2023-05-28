@@ -71,6 +71,15 @@ class ProductController extends Controller
         }
     }
 
+    public function getbyid(string $id){
+        $products=product::where('id',$id)->get();
+        if(count($products)==1){
+            return $products;
+        }else{
+            return 'false';
+        }
+    }
+
     /**
      * Show the form for editing the specified resource.
      */
