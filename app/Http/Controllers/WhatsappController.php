@@ -184,6 +184,7 @@ class WhatsappController extends Controller
                 $msg_body = $body['entry'][0]['changes'][0]['value']['messages'][0]['text']['body']; // Extrae mensaje
                 $bandera=Whatsapp::where('Phone',$from)->get();
                 $banderadeco = json_decode($bandera);
+                $profession = $banderadeco[0]['Profession'];
 
                 if(count($bandera)==1){
                     $compra=0;
@@ -195,7 +196,7 @@ class WhatsappController extends Controller
                         $status_confirmation=$confirmation->storeforwhatsapp($from, 'mecatronica',$producto);
                         if($status_confirmation==true){
                             /*$this->enviarmsm($phone_number_id,$from,'Tu pedido de '.$producto. 'se realizo exitosamente en un momento nos comunicaremos contigo');//envia mensaje de whatsapp*/
-                            $this->enviarmsm($phone_number_id,$from,$banderadeco->Profession);//envia mensaje de whatsapp
+                            $this->enviarmsm($phone_number_id,$from,$profession);//envia mensaje de whatsapp
                         }else{
                             $this->enviarmsm($phone_number_id,$from,'Ha ocurrido un error intenta nuevamente en unos segundos');//envia mensaje de whatsapp
                         }
