@@ -183,8 +183,7 @@ class WhatsappController extends Controller
                 $from = $body['entry'][0]['changes'][0]['value']['messages'][0]['from']; // Extrae numero
                 $msg_body = $body['entry'][0]['changes'][0]['value']['messages'][0]['text']['body']; // Extrae mensaje
                 $bandera=Whatsapp::where('Phone',$from)->get();
-                $banderadeco = json_decode($bandera);
-                $profession = $banderadeco[0]['Profession'];
+                $profession = $bandera[0]->Profession;;
 
                 if(count($bandera)==1){
                     $compra=0;
