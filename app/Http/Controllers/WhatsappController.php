@@ -231,15 +231,14 @@ class WhatsappController extends Controller
                         $theproduct=new ProductController;
                         $productend=$theproduct->getbyid($msg_body);
                         $productofinal = $productend[0]->Name;
-                        $this->enviarmsm($phone_number_id,$from,$productofinal);//envia mensaje de whatsapp
-                        /*if($productend != 'false'){
-                            $productofinal = $productend[0]->Name;
-                            //$status_confirmation=$confirmation->storeforwhatsapp($from, $profession,$productofinal);
-                            $this->enviarmsm($phone_number_id,$from,$productofinal);//envia mensaje de whatsapp
+                        if($productend != 'false'){
+                            $confirmation=new BoxController;
+                            $status_confirmation=$confirmation->storeforwhatsapp($from, $profession,$productofinal);
+                            $this->enviarmsm($phone_number_id,$from,'se confirma la compra de '.$productofinal);//envia mensaje de whatsapp
                             cache([$from.'t' => 'false'], 180);
                         }else{
                             $this->enviarmsm($phone_number_id,$from,'Número invalido');//envia mensaje de whatsapp  
-                        }*/
+                        }
                     }
                     
                     if (preg_match("/^[Tt]{1}[Ii]{1}[Ee]{1}[Nn]{1}[Dd]{1}[Aa]{1}$/", $msg_body)) {
