@@ -44,11 +44,12 @@ class BoxController extends Controller
         */
     }
 
-    public function storeforwhatsapp(string $phone,string $chose,string $product){
+    public function storeforwhatsapp(string $phone,string $chose,string $product,string $price){
         $boxes=new box();
         $boxes->Celular=$phone;
         $boxes->Carrera=$chose;
         $boxes->Producto=$product;
+        $boxes->Precio=$price;
         $boxes->save();
         return true;
     }

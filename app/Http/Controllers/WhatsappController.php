@@ -183,7 +183,6 @@ class WhatsappController extends Controller
                 $from = $body['entry'][0]['changes'][0]['value']['messages'][0]['from']; // Extrae numero
                 $msg_body = $body['entry'][0]['changes'][0]['value']['messages'][0]['text']['body']; // Extrae mensaje
                 $bandera=Whatsapp::where('Phone',$from)->get();
-                $profession = $bandera[0]->Profession;
 
                 if(count($bandera)==1){
                     $compra=0;
@@ -191,8 +190,10 @@ class WhatsappController extends Controller
                     if (preg_match("/^[mM]{1}[oO]{1}[tT]{1}[Oo]{1}$/", $msg_body)) {
                         $compra=1;
                         $producto='Moto taxi';
+                        $precio=env('VALOR_MOTO');
                         $confirmation=new BoxController;
-                        $status_confirmation=$confirmation->storeforwhatsapp($from, $profession,$producto);
+                        $profession = $bandera[0]->Profession;
+                        $status_confirmation=$confirmation->storeforwhatsapp($from, $profession,$producto,$precio);
                         if($status_confirmation==true){
                             $this->enviarmsm($phone_number_id,$from,'Tu pedido de '.$producto. 'se realizo exitosamente en un momento nos comunicaremos contigo');//envia mensaje de whatsapp
                         }else{
@@ -205,8 +206,10 @@ class WhatsappController extends Controller
                     if (preg_match("/^[Dd]{1}[Oo]{1}[Mm]{1}[Ii]{1}[Cc]{1}[Ii]{1}[Ll]{1}[Ii]{1}([Oo]{1}|[Oo]{1}[Ss]{1})$/", $msg_body)) {
                         $compra=1;
                         $producto='Domicilio';
+                        $precio=env('VALOR_DOMICILIO');
                         $confirmation=new BoxController;
-                        $status_confirmation=$confirmation->storeforwhatsapp($from, $profession,$producto);
+                        $profession = $bandera[0]->Profession;
+                        $status_confirmation=$confirmation->storeforwhatsapp($from, $profession,$producto,$precio);
                         if($status_confirmation==true){
                             $this->enviarmsm($phone_number_id,$from,'Tu pedido de '.$producto. 'se realizo exitosamente en un momento nos comunicaremos contigo');//envia mensaje de whatsapp
                         }else{
@@ -217,8 +220,10 @@ class WhatsappController extends Controller
                     if (preg_match("/^[Aa]{1}[Ss]{1}[Ee]{1}[Ss]{1}[Oo]{1}[Rr]{1}[Ii]{1}([Aa]{1}|[Aa]{1}[Ss]{1})$/", $msg_body)) {
                         $compra=1;
                         $producto='asesoria';
+                        $precio='A convenir';
                         $confirmation=new BoxController;
-                        $status_confirmation=$confirmation->storeforwhatsapp($from, $profession,$producto);
+                        $profession = $bandera[0]->Profession;
+                        $status_confirmation=$confirmation->storeforwhatsapp($from, $profession,$producto, $precio);
                         if($status_confirmation==true){
                             $this->enviarmsm($phone_number_id,$from,'Tu servicio de '.$producto. 'se registro exitosamente en un momento nos comunicaremos contigo');//envia mensaje de whatsapp
                         }else{
@@ -230,10 +235,12 @@ class WhatsappController extends Controller
                         $compra=1;
                         $theproduct=new ProductController;
                         $productend=$theproduct->getbyid($msg_body);
-                        $productofinal = $productend[0]->Name;
                         if($productend != 'false'){
                             $confirmation=new BoxController;
-                            $status_confirmation=$confirmation->storeforwhatsapp($from, $profession,$productofinal);
+                            $productofinal = $productend[0]->Name;
+                            $preciofinal = $productend[0]->Price;
+                            $profession = $bandera[0]->Profession;
+                            $status_confirmation=$confirmation->storeforwhatsapp($from, $profession,$productofinal,$preciofinal);
                             $this->enviarmsm($phone_number_id,$from,'se confirma la compra de '.$productofinal);//envia mensaje de whatsapp
                             cache([$from.'t' => 'false'], 180);
                         }else{

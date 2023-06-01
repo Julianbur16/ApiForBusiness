@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('Celular');
             $table->string('Carrera')->nullable();
             $table->string('Producto');
+            $table->string('Precio');
             $table->timestamps();
         });
     }
