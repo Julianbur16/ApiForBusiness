@@ -32,6 +32,7 @@ Route::post('whatsapps',[WhatsappController::class, 'store']);
 Route::get('whatsapps/{whatsapp}',[WhatsappController::class, 'show']);
 Route::put('whatsapps/{whatsapp}',[WhatsappController::class, 'update']);
 Route::delete('whatsapps/{whatsapp}',[WhatsappController::class, 'destroy']);
+Route::post('enviotemplate',[WhatsappController::class, 'sendtemplate']);
 
 Route::post('/webhook', [WhatsappController::class, 'webhook']);
 Route::get('/webhook', [WhatsappController::class, 'verify']);

@@ -27,8 +27,40 @@ class WhatsappController extends Controller
         //
     }
 
-    /**
+    public function sendtemplate(Request $request){
+        $clave=env('CLAVE_SEND');
+        $phone_number_id=env('ID_PHONE');
+        if($request->clave == $clave){
+            $client = new Client();
+            $response = $client->post('https://graph.facebook.com/v12.0/' . $phone_number_id . '/messages?access_token=' . env('WHATSAPP_TOKEN'), [
+            'json' => [
+                'messaging_product' => 'whatsapp',
+                'to' => $request->from,
+                "type"=> "template",
+                "template"=> [
+                    "name"=> "hello_world",
+                    "language"=> [
+                        "code"=> "en_US"
+                    ]
+                ]
+            ],
+        ]);
+        }
+        $data=["message"=>"Enviado satisfactoriamente"];
+        return response()->json($data);
+    }
+
+    /*
      * Store a newly created resource in storage.
+     * "messaging_product": "whatsapp",
+    "to": "{{Recipient-Phone-Number}}",
+    "type": "template",
+    "template": {
+        "name": "hello_world",
+        "language": {
+            "code": "en_US"
+        }
+    }
      */
     public function store(Request $request)
     {
