@@ -246,37 +246,67 @@ class WhatsappController extends Controller
                 if(count($bandera)==1){
                     $compra=0;
                     $producto='';
-                    if (preg_match("/^[mM]{1}[oO]{1}[tT]{1}[Oo]{1}$/", $msg_body) && cache($from.'t')!='true') {
+                    if(count(cache($from.'p'))==2){
                         $compra=1;
-                        $producto='Moto taxi ';
-                        $precio=env('VALOR_MOTO');
+                        if(preg_match("/^[sS]{1}[Ii]{1}$/", $msg_body)){
                         $confirmation=new BoxController;
                         $profession = $bandera[0]->Profession;
-                        $status_confirmation=$confirmation->storeforwhatsapp($from, $profession,$producto,$precio);
+                        $status_confirmation=$confirmation->storeforwhatsapp($from, $profession,cache($from.'p')['producto'],cache($from.'p')['precio']);
                         if($status_confirmation==true){
-                            $this->enviarmsm($phone_number_id,$from,$emoji.' Tu solicitud de '.$producto. 'se realizó exitosamente en un momento, nos comunicaremos contigo '.$emoji1);//envia mensaje de whatsapp
+                            $this->enviarmsm($phone_number_id,$from,$emoji.' Tu solicitud de '.cache($from.'p')['producto']. 'se realizó exitosamente en un momento, nos comunicaremos contigo '.$emoji1);//envia mensaje de whatsapp
+                            $info = [
+                                'precio' => 'false'
+                            ];
+                            cache([$from.'p' => $info], 120);
                         }else{
                             $this->enviarmsm($phone_number_id,$from,'Ha ocurrido un error intenta nuevamente en unos segundos');//envia mensaje de whatsapp
                         }
+                    }else{
+                        $this->enviarmsm($phone_number_id,$from,'No se realizó el pedido, gracias por tenernos en cuenta');//envia mensaje de whatsapp
+                        $info = [
+                            'precio' => 'false'
+                        ];
+                        cache([$from.'p' => $info], 120);
+                    }
+                    }
+                    if (preg_match("/^[mM]{1}[oO]{1}[tT]{1}[Oo]{1}$/", $msg_body) && cache($from.'t')!='true' && count(cache($from.'p'))!=2) {
+                        $compra=1;
+                        $producto='Moto taxi ';
+                        $precio=env('VALOR_MOTO');
+                        $this->enviarmsm($phone_number_id,$from,$emoji .' El costo del moto taxi es de '.$precio.' responde si para confirmar el servicio'.$emoji1);//envia mensaje de whatsapp
+
+                        $status = cache($from.'p', []);
+                        $info = [
+                            'precio' => $precio,
+                            'producto' => $producto
+                        ];
+                        cache([$from.'p' => $info], 120);
                         
 
                     } 
 
-                    if (preg_match("/^[Dd]{1}[Oo]{1}[Mm]{1}[Ii]{1}[Cc]{1}[Ii]{1}[Ll]{1}[Ii]{1}([Oo]{1}|[Oo]{1}[Ss]{1})$/", $msg_body)&& cache($from.'t')!='true') {
+                    if (preg_match("/^[Dd]{1}[Oo]{1}[Mm]{1}[Ii]{1}[Cc]{1}[Ii]{1}[Ll]{1}[Ii]{1}([Oo]{1}|[Oo]{1}[Ss]{1})$/", $msg_body)&& cache($from.'t')!='true' && count(cache($from.'p'))!=2) {
                         $compra=1;
                         $producto='domicilio ';
                         $precio=env('VALOR_DOMICILIO');
-                        $confirmation=new BoxController;
+                        $this->enviarmsm($phone_number_id,$from,$emoji .' El costo del domicilio es de '.$precio.' responde si para confirmar el servicio'.$emoji1);//envia mensaje de whatsapp
+                        $status = cache($from.'p', []);
+                        $info = [
+                            'precio' => $precio,
+                            'producto' => $producto
+                        ];
+                        cache([$from.'p' => $info], 120);
+                        /*$confirmation=new BoxController;
                         $profession = $bandera[0]->Profession;
                         $status_confirmation=$confirmation->storeforwhatsapp($from, $profession,$producto,$precio);
                         if($status_confirmation==true){
                             $this->enviarmsm($phone_number_id,$from,$emoji .' Tu solicitud de '.$producto. 'se realizó exitosamente en un momento, nos comunicaremos contigo '.$emoji1);//envia mensaje de whatsapp
                         }else{
                             $this->enviarmsm($phone_number_id,$from,'Ha ocurrido un error intenta nuevamente en unos segundos');//envia mensaje de whatsapp
-                        }
+                        }*/
                     }
 
-                    if (preg_match("/^[Aa]{1}[Ss]{1}[Ee]{1}[Ss]{1}[Oo]{1}[Rr]{1}[Iií]{1}([Aa]{1}|[Aa]{1}[Ss]{1})$/", $msg_body)&& cache($from.'t')!='true') {
+                    /*if (preg_match("/^[Aa]{1}[Ss]{1}[Ee]{1}[Ss]{1}[Oo]{1}[Rr]{1}[Iií]{1}([Aa]{1}|[Aa]{1}[Ss]{1})$/", $msg_body)&& cache($from.'t')!='true') {
                         $compra=1;
                         $producto='asesoria ';
                         $precio='A convenir';
@@ -288,7 +318,7 @@ class WhatsappController extends Controller
                         }else{
                             $this->enviarmsm($phone_number_id,$from,'Ha ocurrido un error intenta nuevamente en unos segundos');//envia mensaje de whatsapp
                         }
-                    }
+                    }*/
 
                     if(cache($from.'t')=='true'){
                         $compra=1;
@@ -301,7 +331,7 @@ class WhatsappController extends Controller
                             $profession = $bandera[0]->Profession;
                             $status_confirmation=$confirmation->storeforwhatsapp($from, $profession,$productofinal,$preciofinal);
                             $this->enviarmsm($phone_number_id,$from,$emoji .' Se confirma la compra de '.$productofinal.' en un momento, nos comunicaremos contigo '.$emoji1);//envia mensaje de whatsapp
-                            cache([$from.'t' => 'false'], 180);
+                            cache([$from.'t' => 'false'], 120);
                         }else{
                             $this->enviarmsm($phone_number_id,$from,'En dos minutos podrás iniciar una nueva conversación');//envia mensaje de whatsapp  
                         }
@@ -311,7 +341,7 @@ class WhatsappController extends Controller
                         $compra=1;
                         $producto='tienda';
                         $status = cache($from.'t', 'true');
-                        cache([$from.'t' => 'true'], 180);
+                        cache([$from.'t' => 'true'], 120);
                         $lista_productos_obj=new ProductController;
                         $lista_productos=$lista_productos_obj->indexenumerator();
                         $this->enviarmsm($phone_number_id,$from,$lista_productos);//envia mensaje de whatsapp
