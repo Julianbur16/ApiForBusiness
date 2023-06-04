@@ -24,7 +24,7 @@ class ProductController extends Controller
         $productsenumerate=$products->map(function ($products,$indice) {
             return $products->id . ". " . $products->Name . "  ---------  ". $products->Price;
         })->implode(PHP_EOL);
-        return "Productos:\n" .$productsenumerate;
+        return "Productos:\n" .$productsenumerate. "\nIndica el código del producto de tu preferencia";
 
     }
 

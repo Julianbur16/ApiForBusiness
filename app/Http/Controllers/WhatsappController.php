@@ -48,15 +48,15 @@ class WhatsappController extends Controller
                             "parameters"=>[
                                 [
                                     "type"=>"text",
-                                    "text"=>"hola2"
+                                    "text"=>"¿Este chat funciona por medio de Chatgpt?"
                                 ],
                                 [
                                     "type"=>"text",
-                                    "text"=>"hola1"
+                                    "text"=>$request->q1
                                 ],
                                 [
                                     "type"=>"text",
-                                    "text"=>"hola"
+                                    "text"=>$request->q2
                                 ]
                             ]
                         ]
@@ -246,13 +246,13 @@ class WhatsappController extends Controller
                     $producto='';
                     if (preg_match("/^[mM]{1}[oO]{1}[tT]{1}[Oo]{1}$/", $msg_body)) {
                         $compra=1;
-                        $producto='Moto taxi';
+                        $producto='Moto taxi ';
                         $precio=env('VALOR_MOTO');
                         $confirmation=new BoxController;
                         $profession = $bandera[0]->Profession;
                         $status_confirmation=$confirmation->storeforwhatsapp($from, $profession,$producto,$precio);
                         if($status_confirmation==true){
-                            $this->enviarmsm($phone_number_id,$from,'Tu pedido de '.$producto. 'se realizo exitosamente en un momento nos comunicaremos contigo');//envia mensaje de whatsapp
+                            $this->enviarmsm($phone_number_id,$from,' \u{1F44C} Tu solicitud de '.$producto. 'se realizó exitosamente en un momento, nos comunicaremos contigo \u{1F609}');//envia mensaje de whatsapp
                         }else{
                             $this->enviarmsm($phone_number_id,$from,'Ha ocurrido un error intenta nuevamente en unos segundos');//envia mensaje de whatsapp
                         }
@@ -262,27 +262,27 @@ class WhatsappController extends Controller
 
                     if (preg_match("/^[Dd]{1}[Oo]{1}[Mm]{1}[Ii]{1}[Cc]{1}[Ii]{1}[Ll]{1}[Ii]{1}([Oo]{1}|[Oo]{1}[Ss]{1})$/", $msg_body)) {
                         $compra=1;
-                        $producto='Domicilio';
+                        $producto='domicilio ';
                         $precio=env('VALOR_DOMICILIO');
                         $confirmation=new BoxController;
                         $profession = $bandera[0]->Profession;
                         $status_confirmation=$confirmation->storeforwhatsapp($from, $profession,$producto,$precio);
                         if($status_confirmation==true){
-                            $this->enviarmsm($phone_number_id,$from,'Tu pedido de '.$producto. 'se realizo exitosamente en un momento nos comunicaremos contigo');//envia mensaje de whatsapp
+                            $this->enviarmsm($phone_number_id,$from,'\u{1F44C} Tu solicitud de '.$producto. 'se realizó exitosamente en un momento, nos comunicaremos contigo \u{1F609}');//envia mensaje de whatsapp
                         }else{
                             $this->enviarmsm($phone_number_id,$from,'Ha ocurrido un error intenta nuevamente en unos segundos');//envia mensaje de whatsapp
                         }
                     }
 
-                    if (preg_match("/^[Aa]{1}[Ss]{1}[Ee]{1}[Ss]{1}[Oo]{1}[Rr]{1}[Ii]{1}([Aa]{1}|[Aa]{1}[Ss]{1})$/", $msg_body)) {
+                    if (preg_match("/^[Aa]{1}[Ss]{1}[Ee]{1}[Ss]{1}[Oo]{1}[Rr]{1}[Iií]{1}([Aa]{1}|[Aa]{1}[Ss]{1})$/", $msg_body)) {
                         $compra=1;
-                        $producto='asesoria';
+                        $producto='asesoria ';
                         $precio='A convenir';
                         $confirmation=new BoxController;
                         $profession = $bandera[0]->Profession;
                         $status_confirmation=$confirmation->storeforwhatsapp($from, $profession,$producto, $precio);
                         if($status_confirmation==true){
-                            $this->enviarmsm($phone_number_id,$from,'Tu servicio de '.$producto. 'se registro exitosamente en un momento nos comunicaremos contigo');//envia mensaje de whatsapp
+                            $this->enviarmsm($phone_number_id,$from,'\u{1F44C} Tu servicio de '.$producto. 'se registro exitosamente en un momento nos comunicaremos contigo \u{1F609}' );//envia mensaje de whatsapp
                         }else{
                             $this->enviarmsm($phone_number_id,$from,'Ha ocurrido un error intenta nuevamente en unos segundos');//envia mensaje de whatsapp
                         }
@@ -298,7 +298,7 @@ class WhatsappController extends Controller
                             $preciofinal = $productend[0]->Price;
                             $profession = $bandera[0]->Profession;
                             $status_confirmation=$confirmation->storeforwhatsapp($from, $profession,$productofinal,$preciofinal);
-                            $this->enviarmsm($phone_number_id,$from,'se confirma la compra de '.$productofinal);//envia mensaje de whatsapp
+                            $this->enviarmsm($phone_number_id,$from,'\u{1F44C} Se confirma la compra de '.$productofinal.' en un momento, nos comunicaremos contigo \u{1F609}');//envia mensaje de whatsapp
                             cache([$from.'t' => 'false'], 180);
                         }else{
                             $this->enviarmsm($phone_number_id,$from,'Número invalido');//envia mensaje de whatsapp  
@@ -321,7 +321,7 @@ class WhatsappController extends Controller
                     }
                    
                 }else{
-                    $this->enviarmsm($phone_number_id,$from,'Numero no registrado');//envia mensaje de whatsapp
+                    $this->enviarmsm($phone_number_id,$from,'Este número no está habilitado para el servicio de Allthings para registrarlo, envía tu número, tu nombre y carrera al siguiente contacto 3163865945. ');//envia mensaje de whatsapp
                 }
             }
             return response('Success', 200);
