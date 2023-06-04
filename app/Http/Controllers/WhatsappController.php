@@ -240,6 +240,8 @@ class WhatsappController extends Controller
                 $from = $body['entry'][0]['changes'][0]['value']['messages'][0]['from']; // Extrae numero
                 $msg_body = $body['entry'][0]['changes'][0]['value']['messages'][0]['text']['body']; // Extrae mensaje
                 $bandera=Whatsapp::where('Phone',$from)->get();
+                $emoji = json_decode('"\u{1F44C}"');
+                $emoji1 = json_decode('"\u{1F609}"');
 
                 if(count($bandera)==1){
                     $compra=0;
@@ -252,7 +254,7 @@ class WhatsappController extends Controller
                         $profession = $bandera[0]->Profession;
                         $status_confirmation=$confirmation->storeforwhatsapp($from, $profession,$producto,$precio);
                         if($status_confirmation==true){
-                            $this->enviarmsm($phone_number_id,$from,' \u{1F44C} Tu solicitud de '.$producto. 'se realizó exitosamente en un momento, nos comunicaremos contigo \u{1F609}');//envia mensaje de whatsapp
+                            $this->enviarmsm($phone_number_id,$from,$emoji.' Tu solicitud de '.$producto. 'se realizó exitosamente en un momento, nos comunicaremos contigo '.$emoji1);//envia mensaje de whatsapp
                         }else{
                             $this->enviarmsm($phone_number_id,$from,'Ha ocurrido un error intenta nuevamente en unos segundos');//envia mensaje de whatsapp
                         }
@@ -268,7 +270,7 @@ class WhatsappController extends Controller
                         $profession = $bandera[0]->Profession;
                         $status_confirmation=$confirmation->storeforwhatsapp($from, $profession,$producto,$precio);
                         if($status_confirmation==true){
-                            $this->enviarmsm($phone_number_id,$from,'\u{1F44C} Tu solicitud de '.$producto. 'se realizó exitosamente en un momento, nos comunicaremos contigo \u{1F609}');//envia mensaje de whatsapp
+                            $this->enviarmsm($phone_number_id,$from,$emoji .' Tu solicitud de '.$producto. 'se realizó exitosamente en un momento, nos comunicaremos contigo '.$emoji1);//envia mensaje de whatsapp
                         }else{
                             $this->enviarmsm($phone_number_id,$from,'Ha ocurrido un error intenta nuevamente en unos segundos');//envia mensaje de whatsapp
                         }
@@ -282,7 +284,7 @@ class WhatsappController extends Controller
                         $profession = $bandera[0]->Profession;
                         $status_confirmation=$confirmation->storeforwhatsapp($from, $profession,$producto, $precio);
                         if($status_confirmation==true){
-                            $this->enviarmsm($phone_number_id,$from,'\u{1F44C} Tu servicio de '.$producto. 'se registro exitosamente en un momento nos comunicaremos contigo \u{1F609}' );//envia mensaje de whatsapp
+                            $this->enviarmsm($phone_number_id,$from,$emoji .' Tu servicio de '.$producto. 'se registro exitosamente en un momento nos comunicaremos contigo '.$emoji1 );//envia mensaje de whatsapp
                         }else{
                             $this->enviarmsm($phone_number_id,$from,'Ha ocurrido un error intenta nuevamente en unos segundos');//envia mensaje de whatsapp
                         }
@@ -298,7 +300,7 @@ class WhatsappController extends Controller
                             $preciofinal = $productend[0]->Price;
                             $profession = $bandera[0]->Profession;
                             $status_confirmation=$confirmation->storeforwhatsapp($from, $profession,$productofinal,$preciofinal);
-                            $this->enviarmsm($phone_number_id,$from,'\u{1F44C} Se confirma la compra de '.$productofinal.' en un momento, nos comunicaremos contigo \u{1F609}');//envia mensaje de whatsapp
+                            $this->enviarmsm($phone_number_id,$from,$emoji .' Se confirma la compra de '.$productofinal.' en un momento, nos comunicaremos contigo '.$emoji1);//envia mensaje de whatsapp
                             cache([$from.'t' => 'false'], 180);
                         }else{
                             $this->enviarmsm($phone_number_id,$from,'Número invalido');//envia mensaje de whatsapp  
