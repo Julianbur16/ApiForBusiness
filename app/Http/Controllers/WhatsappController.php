@@ -240,8 +240,8 @@ class WhatsappController extends Controller
                 $from = $body['entry'][0]['changes'][0]['value']['messages'][0]['from']; // Extrae numero
                 $msg_body = $body['entry'][0]['changes'][0]['value']['messages'][0]['text']['body']; // Extrae mensaje
                 $bandera=Whatsapp::where('Phone',$from)->get();
-                $emoji = json_decode('"\u{1F44C}"');
-                $emoji1 = json_decode('"\u{1F609}"');
+                $emoji = "\u{1F44C}";
+                $emoji1 ="\u{1F609}";
 
                 if(count($bandera)==1){
                     $compra=0;
