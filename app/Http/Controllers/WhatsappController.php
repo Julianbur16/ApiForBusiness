@@ -240,8 +240,8 @@ class WhatsappController extends Controller
                 $from = $body['entry'][0]['changes'][0]['value']['messages'][0]['from']; // Extrae numero
                 $msg_body = $body['entry'][0]['changes'][0]['value']['messages'][0]['text']['body']; // Extrae mensaje
                 $bandera=Whatsapp::where('Phone',$from)->get();
-                $emoji = "\u{1F44C}";
-                $emoji1 ="\u{1F609}";
+                $emoji1 = "\u{1F44C}";
+                $emoji ="\u{1F609}";
 
                 if(count($bandera)==1){
                     $compra=0;
@@ -303,7 +303,7 @@ class WhatsappController extends Controller
                             $this->enviarmsm($phone_number_id,$from,$emoji .' Se confirma la compra de '.$productofinal.' en un momento, nos comunicaremos contigo '.$emoji1);//envia mensaje de whatsapp
                             cache([$from.'t' => 'false'], 180);
                         }else{
-                            $this->enviarmsm($phone_number_id,$from,'Número invalido');//envia mensaje de whatsapp  
+                            $this->enviarmsm($phone_number_id,$from,'En dos minutos podrás iniciar una nueva conversación');//envia mensaje de whatsapp  
                         }
                     }
                     
