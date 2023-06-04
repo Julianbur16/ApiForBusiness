@@ -38,16 +38,41 @@ class WhatsappController extends Controller
                 'to' => $request->from,
                 "type"=> "template",
                 "template"=> [
-                    "name"=> "hello_world",
+                    "name"=> "inicio",
                     "language"=> [
-                        "code"=> "en_US"
+                        "code"=> "es"
+                    ],
+                    "components"=>[
+                        [
+                            "type"=>"body",
+                            "parameters"=>[
+                                [
+                                    "type"=>"text",
+                                    "text"=>"hola2"
+                                ],
+                                [
+                                    "type"=>"text",
+                                    "text"=>"hola1"
+                                ],
+                                [
+                                    "type"=>"text",
+                                    "text"=>"hola"
+                                ]
+                            ]
+                        ]
                     ]
                 ]
             ],
         ]);
-        }
+
         $data=["message"=>"Enviado satisfactoriamente"];
         return response()->json($data);
+        }else{
+
+            $data=["message"=>"Error de credenciales"];
+            return response()->json($data); 
+        }
+        
     }
 
     /*
