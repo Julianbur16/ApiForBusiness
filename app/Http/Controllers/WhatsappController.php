@@ -246,7 +246,7 @@ class WhatsappController extends Controller
                 if(count($bandera)==1){
                     $compra=0;
                     $producto='';
-                    if (preg_match("/^[mM]{1}[oO]{1}[tT]{1}[Oo]{1}$/", $msg_body)) {
+                    if (preg_match("/^[mM]{1}[oO]{1}[tT]{1}[Oo]{1}$/", $msg_body) && cache($from.'t')!='true') {
                         $compra=1;
                         $producto='Moto taxi ';
                         $precio=env('VALOR_MOTO');
@@ -262,7 +262,7 @@ class WhatsappController extends Controller
 
                     } 
 
-                    if (preg_match("/^[Dd]{1}[Oo]{1}[Mm]{1}[Ii]{1}[Cc]{1}[Ii]{1}[Ll]{1}[Ii]{1}([Oo]{1}|[Oo]{1}[Ss]{1})$/", $msg_body)) {
+                    if (preg_match("/^[Dd]{1}[Oo]{1}[Mm]{1}[Ii]{1}[Cc]{1}[Ii]{1}[Ll]{1}[Ii]{1}([Oo]{1}|[Oo]{1}[Ss]{1})$/", $msg_body)&& cache($from.'t')!='true') {
                         $compra=1;
                         $producto='domicilio ';
                         $precio=env('VALOR_DOMICILIO');
@@ -276,7 +276,7 @@ class WhatsappController extends Controller
                         }
                     }
 
-                    if (preg_match("/^[Aa]{1}[Ss]{1}[Ee]{1}[Ss]{1}[Oo]{1}[Rr]{1}[Iií]{1}([Aa]{1}|[Aa]{1}[Ss]{1})$/", $msg_body)) {
+                    if (preg_match("/^[Aa]{1}[Ss]{1}[Ee]{1}[Ss]{1}[Oo]{1}[Rr]{1}[Iií]{1}([Aa]{1}|[Aa]{1}[Ss]{1})$/", $msg_body)&& cache($from.'t')!='true') {
                         $compra=1;
                         $producto='asesoria ';
                         $precio='A convenir';
@@ -307,7 +307,7 @@ class WhatsappController extends Controller
                         }
                     }
                     
-                    if (preg_match("/^[Tt]{1}[Ii]{1}[Ee]{1}[Nn]{1}[Dd]{1}[Aa]{1}$/", $msg_body)) {
+                    if (preg_match("/^[Tt]{1}[Ii]{1}[Ee]{1}[Nn]{1}[Dd]{1}[Aa]{1}$/", $msg_body) && cache($from.'t')!='true') {
                         $compra=1;
                         $producto='tienda';
                         $status = cache($from.'t', 'true');
@@ -317,13 +317,13 @@ class WhatsappController extends Controller
                         $this->enviarmsm($phone_number_id,$from,$lista_productos);//envia mensaje de whatsapp
                     }
                    
-                    if($compra==0){
+                    if($compra==0 && cache($from.'t')!='true'){
                     $text1=$this->responsechat($promt,$msg_body,$from);//Obtiene respuesta de chatgpt
                     $this->enviarmsm($phone_number_id,$from,$text1);//envia mensaje de whatsapp
                     }
                    
                 }else{
-                    $this->enviarmsm($phone_number_id,$from,'Este número no está habilitado para el servicio de Allthings para registrarlo, envía tu número, tu nombre y carrera al siguiente contacto 3163865945. ');//envia mensaje de whatsapp
+                    $this->enviarmsm($phone_number_id,$from,'Este número no está habilitado para el servicio de Allthings para registrarlo, envía tu número, tu nombre y carrera al siguiente contacto 3182084130. ');//envia mensaje de whatsapp
                 }
             }
             return response('Success', 200);
