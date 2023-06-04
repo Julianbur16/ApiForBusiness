@@ -246,6 +246,25 @@ class WhatsappController extends Controller
                 if(count($bandera)==1){
                     $compra=0;
                     $producto='';
+                    if(cache($from.'compra')=='true'){
+                        if(preg_match("/^[sS]{1}[Ii]{1}$/", $msg_body)){
+                            $confirmation=new BoxController;
+                            $profession = $bandera[0]->Profession;
+                            $status_confirmation=$confirmation->storeforwhatsapp($from, $profession,cache($from.'product'),cache($from.'price'));
+                            
+                            if($status_confirmation==true){
+                                $this->enviarmsm($phone_number_id,$from,$emoji.' Tu solicitud de '.cache($from.'product'). 'se realizó exitosamente en un momento, nos comunicaremos contigo '.$emoji1);//envia mensaje de whatsapp
+                                cache([$from.'compra' => 'false'], 120);
+                            }else{
+                                $this->enviarmsm($phone_number_id,$from,'Ha ocurrido un error intenta nuevamente en unos segundos');//envia mensaje de whatsapp
+                                cache([$from.'compra' => 'false'], 120);
+                            }
+                    }
+                    else{
+                        $this->enviarmsm($phone_number_id,$from,'No se realizó tu solicitud, gracias por tenernos en cuenta');//envia mensaje de whatsapp
+                                cache([$from.'compra' => 'false'], 120);
+                            }
+                    }
                     if (preg_match("/^[mM]{1}[oO]{1}[tT]{1}[Oo]{1}$/", $msg_body) && cache($from.'t')!='true' && cache($from.'compra')!='true') {
                         $compra=1;
                         $producto='Moto taxi ';
@@ -253,11 +272,14 @@ class WhatsappController extends Controller
                         //$this->enviarmsm($phone_number_id,$from,$emoji .' El costo del moto taxi es de '.$precio.' responde si para confirmar el servicio'.$emoji1);//envia mensaje de whatsapp
                         $status1 = cache($from.'product', $producto);
                         cache([$from.'product' => $producto], 120);
+
                         $status2 = cache($from.'price', $precio);
                         cache([$from.'price' => $precio], 120);
+
                         $status3 = cache($from.'compra', 'true');
                         cache([$from.'compra' => 'true'], 120);
-                        $this->enviarmsm($phone_number_id,$from,$emoji .' El costo del moto taxi es de '.cache($from.'product').' responde si para confirmar el servicio'.$emoji1);//envia mensaje de whatsapp
+
+                        $this->enviarmsm($phone_number_id,$from,$emoji .' El costo del moto taxi es de '.cache($from.'price').' responde si para confirmar el servicio'.$emoji1);//envia mensaje de whatsapp
                         /*$confirmation=new BoxController;
                         $profession = $bandera[0]->Profession;
                         $status_confirmation=$confirmation->storeforwhatsapp($from, $profession,$producto,$precio);
