@@ -247,6 +247,7 @@ class WhatsappController extends Controller
                     $compra=0;
                     $producto='';
                     if(cache($from.'compra')=='true'){
+                        $compra=1;
                         if(preg_match("/^[sS]{1}[Ii]{1}$/", $msg_body)){
                             $confirmation=new BoxController;
                             $profession = $bandera[0]->Profession;
