@@ -246,19 +246,18 @@ class WhatsappController extends Controller
                 if(count($bandera)==1){
                     $compra=0;
                     $producto='';
-                    if (preg_match("/^[mM]{1}[oO]{1}[tT]{1}[Oo]{1}$/", $msg_body) && cache($from.'t')!='true' && count(cache($from.'p'))!=2) {
+                    if (preg_match("/^[mM]{1}[oO]{1}[tT]{1}[Oo]{1}$/", $msg_body) && cache($from.'t')!='true' && cache($from.'compra')!='true') {
                         $compra=1;
                         $producto='Moto taxi ';
                         $precio=env('VALOR_MOTO');
                         //$this->enviarmsm($phone_number_id,$from,$emoji .' El costo del moto taxi es de '.$precio.' responde si para confirmar el servicio'.$emoji1);//envia mensaje de whatsapp
-
-                        $status = cache($from.'p', []);
-                        $info = [
-                            'precio' => $precio,
-                            'producto' => $producto
-                        ];
-                        cache([$from.'p' => $info], 120);
-                        $this->enviarmsm($phone_number_id,$from,$emoji .' El costo del moto taxi es de '.cache($from.'p')['precio'].' responde si para confirmar el servicio'.$emoji1);//envia mensaje de whatsapp
+                        $status1 = cache($from.'product', $producto);
+                        cache([$from.'product' => $producto], 120);
+                        $status2 = cache($from.'price', $precio);
+                        cache([$from.'price' => $precio], 120);
+                        $status3 = cache($from.'compra', 'true');
+                        cache([$from.'compra' => 'true'], 120);
+                        $this->enviarmsm($phone_number_id,$from,$emoji .' El costo del moto taxi es de '.cache($from.'product').' responde si para confirmar el servicio'.$emoji1);//envia mensaje de whatsapp
                         /*$confirmation=new BoxController;
                         $profession = $bandera[0]->Profession;
                         $status_confirmation=$confirmation->storeforwhatsapp($from, $profession,$producto,$precio);
