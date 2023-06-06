@@ -266,9 +266,9 @@ class WhatsappController extends Controller
                                 cache([$from.'compra' => 'false'], 120);
                             }
                     }
-                    if (preg_match("/^[mM]{1}[oO]{1}[tT]{1}[Oo]{1}$/", $msg_body) && cache($from.'t')!='true' && cache($from.'compra')!='true') {
+                    if (preg_match("/^[tT]{1}[aA]{1}[Xx]{1}[Ii]{1}$/", $msg_body) && cache($from.'t')!='true' && cache($from.'compra')!='true') {
                         $compra=1;
-                        $producto='Moto taxi ';
+                        $producto='taxi ';
                         $precio=env('VALOR_MOTO');
                     
                         $status1 = cache($from.'product', $producto);
@@ -280,12 +280,12 @@ class WhatsappController extends Controller
                         $status3 = cache($from.'compra', 'true');
                         cache([$from.'compra' => 'true'], 120);
 
-                        $this->enviarmsm($phone_number_id,$from,'El costo del moto taxi es de '.cache($from.'price').' responde si para confirmar el servicio'."\u{1F3CD}");//envia mensaje de whatsapp
+                        $this->enviarmsm($phone_number_id,$from,'El costo del taxi es de '.cache($from.'price').' responde si para confirmar el servicio'."\u{1F697}");//envia mensaje de whatsapp
                         
 
                     } 
 
-                    if (preg_match("/^[Dd]{1}[Oo]{1}[Mm]{1}[Ii]{1}[Cc]{1}[Ii]{1}[Ll]{1}[Ii]{1}([Oo]{1}|[Oo]{1}[Ss]{1})$/", $msg_body)&& cache($from.'t')!='true' && cache($from.'compra')!='true') {
+                    /*if (preg_match("/^[Dd]{1}[Oo]{1}[Mm]{1}[Ii]{1}[Cc]{1}[Ii]{1}[Ll]{1}[Ii]{1}([Oo]{1}|[Oo]{1}[Ss]{1})$/", $msg_body)&& cache($from.'t')!='true' && cache($from.'compra')!='true') {
                         $compra=1;
                         $producto='domicilio ';
                         $precio=env('VALOR_DOMICILIO');
@@ -300,7 +300,7 @@ class WhatsappController extends Controller
                         cache([$from.'compra' => 'true'], 120);
 
                         $this->enviarmsm($phone_number_id,$from,'El costo del domicilio es de '.cache($from.'price').' responde si para confirmar el servicio'."\u{1F4E6}");//envia mensaje de whatsapp
-                    }
+                    }*/
 
                     /*if (preg_match("/^[Aa]{1}[Ss]{1}[Ee]{1}[Ss]{1}[Oo]{1}[Rr]{1}[Iií]{1}([Aa]{1}|[Aa]{1}[Ss]{1})$/", $msg_body)&& cache($from.'t')!='true') {
                         $compra=1;
