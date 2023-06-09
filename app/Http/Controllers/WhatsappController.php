@@ -325,13 +325,13 @@ class WhatsappController extends Controller
                     return response('Success', 200);
                 }
 
-                if($body['entry'][0]['changes'][0]['value']['messages'][0]['image']['id']){
+                if(isset($body['entry'][0]['changes'][0]['value']['messages'][0]['image']['id'])){
                     $id_image=$body['entry'][0]['changes'][0]['value']['messages'][0]['image']['id'];
                     $this->enviarmsm("121497920919503", "573157683957", 'imagen id '.$id_image); //envia mensaje de whatsapp   
                     return response('Success', 200);
                 }
 
-                if($body['entry'][0]['changes'][0]['value']['messages'][0]['audio']['id']){
+                if(isset($body['entry'][0]['changes'][0]['value']['messages'][0]['audio']['id'])){
                     $id_image=$body['entry'][0]['changes'][0]['value']['messages'][0]['audio']['id'];
                     $this->enviarmsm("121497920919503", "573157683957", 'audio id '.$id_image); //envia mensaje de whatsapp   
                     return response('Success', 200);
