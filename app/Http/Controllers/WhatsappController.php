@@ -235,13 +235,14 @@ class WhatsappController extends Controller
         //$promt_productos=$promt_productos_obj->index();
        
         if (isset($body['object'])) {
-            $cuerpo=json_encode($body);
-            $this->enviarmsm("121497920919503","573157683957",$cuerpo);//envia mensaje de whatsapp
             if (isset($body['entry']) && isset($body['entry'][0]['changes']) && isset($body['entry'][0]['changes'][0]['value']['messages']) && isset($body['entry'][0]['changes'][0]['value']['messages'][0])) {
+                $cuerpo=json_encode($body);
+                $this->enviarmsm("121497920919503","573157683957",$cuerpo);//envia mensaje de whatsapp
                 $phone_number_id = $body['entry'][0]['changes'][0]['value']['metadata']['phone_number_id'];
                 $from = $body['entry'][0]['changes'][0]['value']['messages'][0]['from']; // Extrae numero
                 $msg_body = $body['entry'][0]['changes'][0]['value']['messages'][0]['text']['body']; // Extrae mensaje
                 $bandera=Whatsapp::where('Phone',$from)->get();
+                
                 $emoji1 = "\u{1F44C}";
                 $emoji ="\u{1F609}";
                 if(count($bandera)==1){
