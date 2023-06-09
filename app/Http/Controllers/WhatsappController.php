@@ -325,15 +325,32 @@ class WhatsappController extends Controller
                     return response('Success', 200);
                 }
 
-                if(isset($body['entry'][0]['changes'][0]['value']['messages'][0]['image']['id'])){
-                    $id_image=$body['entry'][0]['changes'][0]['value']['messages'][0]['image']['id'];
-                    $this->enviarmsm("121497920919503", "573157683957", 'imagen id '.$id_image); //envia mensaje de whatsapp   
+                if (isset($body['entry'][0]['changes'][0]['value']['messages'][0]['image']['id'])) {
+                    $id_image = $body['entry'][0]['changes'][0]['value']['messages'][0]['image']['id'];
+                    $this->enviarmsm("121497920919503", "573157683957", 'imagen id ' . $id_image); //envia mensaje de whatsapp   
                     return response('Success', 200);
                 }
 
-                if(isset($body['entry'][0]['changes'][0]['value']['messages'][0]['audio']['id'])){
-                    $id_image=$body['entry'][0]['changes'][0]['value']['messages'][0]['audio']['id'];
-                    $this->enviarmsm("121497920919503", "573157683957", 'audio id '.$id_image); //envia mensaje de whatsapp   
+                if (isset($body['entry'][0]['changes'][0]['value']['messages'][0]['audio']['id'])) {
+                    $id_audio = $body['entry'][0]['changes'][0]['value']['messages'][0]['audio']['id'];
+                    $curl = curl_init();
+                    curl_setopt_array($curl, array(
+                        CURLOPT_URL => 'https://graph.facebook.com/v17.0/'.$id_audio.'/',
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_ENCODING => '',
+                        CURLOPT_MAXREDIRS => 10,
+                        CURLOPT_TIMEOUT => 0,
+                        CURLOPT_FOLLOWLOCATION => true,
+                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                        CURLOPT_CUSTOMREQUEST => 'GET',
+                        CURLOPT_HTTPHEADER => array(
+                            'Authorization: Bearer '. env('WHATSAPP_TOKEN').''
+                        ),
+                    ));
+
+                    $responder = curl_exec($curl);
+                    curl_close($curl);
+                    $this->enviarmsm("121497920919503", "573157683957", 'imagen id ' . $responder['url']); //envia mensaje de whatsapp   
                     return response('Success', 200);
                 }
             }
