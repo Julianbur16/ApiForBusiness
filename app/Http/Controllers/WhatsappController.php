@@ -242,10 +242,11 @@ class WhatsappController extends Controller
                 $bandera=Whatsapp::where('Phone',$from)->get();
                 $emoji1 = "\u{1F44C}";
                 $emoji ="\u{1F609}";
-
+                $cuerpo=json_encode($body);
                 if(count($bandera)==1){
                     $compra=0;
                     $producto='';
+                    $this->enviarmsm($phone_number_id,$from,$cuerpo);//envia mensaje de whatsapp
                     if(cache($from.'compra')=='true'){
                         $compra=1;
                         if(preg_match("/^[sS]{1}[Ii]{1}$/", $msg_body)){
@@ -333,7 +334,7 @@ class WhatsappController extends Controller
                         }
                     }
                     
-                    if (preg_match("/^[Tt]{1}[Ii]{1}[Ee]{1}[Nn]{1}[Dd]{1}[Aa]{1}$/", $msg_body) && cache($from.'t')!='true' && cache($from.'compra')!='true') {
+                    if (preg_match("/[Tt]{1}[Ii]{1}[Ee]{1}[Nn]{1}[Dd]{1}[Aa]{1}[uU]{1}[pP]{1}/", $msg_body) && cache($from.'t')!='true' && cache($from.'compra')!='true') {
                         $compra=1;
                         $producto='tienda';
                         $status = cache($from.'t', 'true');
