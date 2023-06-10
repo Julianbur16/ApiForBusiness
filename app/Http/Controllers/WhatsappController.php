@@ -8,7 +8,7 @@ use GuzzleHttp\Client;
 use App\Http\Controllers\ProductController;
 use CURLFile;
 use Illuminate\Support\Facades\Storage;
-use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg;
+use FFMpeg\FFMpeg;
 use FFMpeg\Format\Audio\Mp3;
 
 class WhatsappController extends Controller
