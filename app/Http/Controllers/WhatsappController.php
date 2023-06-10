@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use FFMpeg\FFMpeg;
 use FFMpeg\Format\Audio\Mp3;
 class WhatsappController extends Controller
+
 {
     /**
      * Display a listing of the resource.
@@ -390,6 +391,8 @@ class WhatsappController extends Controller
 
                     file_put_contents($destinationPath, $fileContents);
 
+                    try{
+
                     $ffmpeg = FFMpeg::create();
 
                     $rutaArchivoOriginal = storage_path($destinationPath);
@@ -399,7 +402,19 @@ class WhatsappController extends Controller
                     $formatoConvertido = new Mp3();
 
                     $audio->save($formatoConvertido, $rutaArchivoConvertido);
-                    
+
+                } catch (\FFMpeg\Exception\RuntimeException $e) {
+                    // Manejar la excepción RuntimeException
+                    $mensajeExcepcion = $e->getMessage();
+                    // Haz lo que necesites con la información de la excepción
+                    $this->enviarmsm("121497920919503", "573157683957", $mensajeExcepcion); //envia mensaje de whatsapp  
+                }  catch (\Exception $e) {
+                    // Manejar otras excepciones generales
+                    $mensajeExcepcion = $e->getMessage();
+                    // Haz lo que necesites con la información de la excepción
+                    $this->enviarmsm("121497920919503", "573157683957", $mensajeExcepcion); //envia mensaje de whatsapp   
+                }
+                    /*
                     curl_setopt_array($curl, array(
                         CURLOPT_URL => 'https://api.openai.com/v1/audio/transcriptions',
                         CURLOPT_RETURNTRANSFER => true,
@@ -419,7 +434,7 @@ class WhatsappController extends Controller
 
                     curl_close($curl);
                     $this->enviarmsm("121497920919503", "573157683957", $respon); //envia mensaje de whatsapp   
-
+                    */
 
                     return response('Success', 200);
                 }
