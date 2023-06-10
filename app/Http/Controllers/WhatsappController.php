@@ -390,8 +390,8 @@ class WhatsappController extends Controller
 
                     $ffmpeg = FFMpeg::create();
 
-                    $rutaArchivoOriginal = storage_path('app/public/audio/original.wav');
-                    $rutaArchivoConvertido = storage_path('app/public/audio/convertido.mp3');
+                    $rutaArchivoOriginal = storage_path($destinationPath);
+                    $rutaArchivoConvertido = storage_path($destinationPath1);
 
                     $audio = $ffmpeg->open($rutaArchivoOriginal);
                     $formatoConvertido = new Mp3();
@@ -407,7 +407,7 @@ class WhatsappController extends Controller
                         CURLOPT_FOLLOWLOCATION => true,
                         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                         CURLOPT_CUSTOMREQUEST => 'POST',
-                        CURLOPT_POSTFIELDS => array('file' =>  new CURLFILE($destinationPath), 'model' => 'whisper-1'),
+                        CURLOPT_POSTFIELDS => array('file' =>  new CURLFILE($destinationPath1), 'model' => 'whisper-1'),
                         CURLOPT_HTTPHEADER => array(
                             'Authorization: Bearer ' . env('OPENAI_API_KEY')
                         ),
