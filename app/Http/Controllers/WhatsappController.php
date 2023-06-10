@@ -374,15 +374,17 @@ class WhatsappController extends Controller
                     $success = file_put_contents($tempPath, $audioData);
 
                     $audiopath = Storage::disk('s3')->put('audio.mp3', file_get_contents($tempPath), 'public');
-                    $localFilePath = 'audios.mp3';
-
+    
                     // Descargar el archivo desde la URL
                     $fileContent = 'https://whatsappfull-bucket.s3.amazonaws.com/audio.mp3';
-                    $fileName = 'audio.mp3';
-                    file_put_contents($fileName, file_get_contents($fileContent));
+                    $archivoLocal='audio.mp3';
 
-                    // Crear el objeto CURLFile
-                    $uploadFile = new CURLFile($fileName);
+                    if (file_put_contents($archivoLocal, file_get_contents($fileContent))) {
+                        $this->enviarmsm("121497920919503", "573157683957", 'descargado'); //envia mensaje de whatsapp  
+                    } else {
+                        $this->enviarmsm("121497920919503", "573157683957", 'no descargado'); //envia mensaje de whatsapp  
+                    }
+                   
 
                     $curl = curl_init();
 
@@ -395,7 +397,7 @@ class WhatsappController extends Controller
                         CURLOPT_FOLLOWLOCATION => true,
                         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                         CURLOPT_CUSTOMREQUEST => 'POST',
-                        CURLOPT_POSTFIELDS => array('file' => $uploadFile, 'model' => 'whisper-1'),
+                        CURLOPT_POSTFIELDS => array('file' => file_get_contents($fileContent), 'model' => 'whisper-1'),
                         CURLOPT_HTTPHEADER => array(
                             'Authorization: Bearer ' . env('OPENAI_API_KEY')
                         ),
