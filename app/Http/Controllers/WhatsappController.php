@@ -373,12 +373,10 @@ class WhatsappController extends Controller
                     $success = file_put_contents($tempPath, $audioData);
 
                     $audiopath = Storage::disk('s3')->put('audio.mp3', file_get_contents($tempPath), 'public');
-                    $urlconten = Storage::url('audio.mp3');
-                    $this->enviarmsm("121497920919503", "573157683957", $urlconten); //envia mensaje de whatsapp   
                     $localFilePath = 'audios.mp3';
 
                     // Descargar el archivo desde la URL
-                    $fileContent = file_get_contents($urlconten);
+                    $fileContent = file_get_contents('https://whatsappfull-bucket.s3.amazonaws.com/audio.mp3');
                     file_put_contents($localFilePath, $fileContent);
                     $uploadFile = Utils::tryFopen($localFilePath, 'r');
 
