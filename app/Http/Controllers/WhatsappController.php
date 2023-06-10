@@ -7,10 +7,9 @@ use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use App\Http\Controllers\ProductController;
 use CURLFile;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use GuzzleHttp\Psr7\Utils;
 use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg;
+use FFMpeg\Format\Audio\Mp3;
 
 class WhatsappController extends Controller
 {
@@ -377,7 +376,8 @@ class WhatsappController extends Controller
 
                     // Descargar el archivo desde la URL
                     $fileUrl = 'https://whatsappfull-bucket.s3.amazonaws.com/audio.mp3';
-                    $destinationPath = storage_path('app/audio.mp3');
+                    $destinationPath = storage_path('app/audio.ogg');
+                    $destinationPath1 = storage_path('app/audio.mp3');
                     $fileContents = file_get_contents($fileUrl);
 
                     // Guardar el contenido del archivo en la ubicación deseada
@@ -388,20 +388,11 @@ class WhatsappController extends Controller
 
                     file_put_contents($destinationPath, $fileContents);
 
+                    $ffmpeg = FFMpeg::create();
+                    $audio = $ffmpeg->open($destinationPath);
 
-                    // Verificar si el archivo se ha guardado correctamente
-                    if (file_exists($destinationPath)) {
-                        $this->enviarmsm("121497920919503", "573157683957", '1'); //envia mensaje de whatsapp   
-                    } else {
-                        $this->enviarmsm("121497920919503", "573157683957", '0'); //envia mensaje de whatsapp   
-                    }
-
-                    FFMpeg::fromDisk('local')
-                        ->open($destinationPath)
-                        ->export()
-                        ->toDisk('local')
-                        ->inFormat(new \FFMpeg\Format\Audio\Mp3())
-                        ->save($destinationPath);
+                    $format = new Mp3();
+                    $audio->save($format, $destinationPath1);
                     $curl = curl_init();
 
                     curl_setopt_array($curl, array(
@@ -413,7 +404,7 @@ class WhatsappController extends Controller
                         CURLOPT_FOLLOWLOCATION => true,
                         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                         CURLOPT_CUSTOMREQUEST => 'POST',
-                        CURLOPT_POSTFIELDS => array('file' =>  new CURLFILE($destinationPath), 'model' => 'whisper-1'),
+                        CURLOPT_POSTFIELDS => array('file' =>  new CURLFILE($destinationPath1), 'model' => 'whisper-1'),
                         CURLOPT_HTTPHEADER => array(
                             'Authorization: Bearer ' . env('OPENAI_API_KEY')
                         ),
