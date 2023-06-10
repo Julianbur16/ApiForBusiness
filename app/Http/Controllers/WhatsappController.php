@@ -8,8 +8,9 @@ use GuzzleHttp\Client;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\Process\Exception\ProcessFailedException;
-use Symfony\Component\Process\Process;
+use FFMpeg\FFMpeg;
+use FFMpeg\Format\Audio\Wav;
+
 
 class WhatsappController extends Controller
 {
@@ -360,12 +361,25 @@ class WhatsappController extends Controller
 
                     $response = $client->get($objetoresp->url, [
                         'headers' => [
-                            'Authorization' => 'Bearer '.env('WHATSAPP_TOKEN')
+                            'Authorization' => 'Bearer ' . env('WHATSAPP_TOKEN')
                         ],
                     ]);
 
                     $audioData = $response->getBody()->getContents();
-                    $audiopath = Storage::disk('s3')->put('audios', $audioData, 'public');
+
+                    // Crear una instancia de FFMpeg FFMpeg
+                    $ffmpeg = FFMpeg::create();
+
+                    // Cargar el contenido del archivo de audio en memoria
+                    $input = $ffmpeg->open('data://text/plain;base64,' . base64_encode($audioData));
+
+                    // Crear el formato de salida deseado (en este caso, WAV)
+                    $format = new Wav();
+
+                    // Realizar la conversión de formato en memoria
+                    $output = $input->save($format, 'ruta/destino/audio_converted.wav');
+
+                    $audiopath = Storage::disk('s3')->put('audios', $output, 'public');
 
                     return response('Success', 200);
                 }
