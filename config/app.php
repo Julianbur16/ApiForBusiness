@@ -169,6 +169,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         ProtoneMedia\LaravelFFMpeg\Support\ServiceProvider::class,
+        Folour\Flavy\Provider\FlavyServiceProvider::class,
     ])->toArray(),
 
     /*
@@ -184,7 +185,8 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
-        'FFMpeg' => ProtoneMedia\LaravelFFMpeg\Support\FFMpeg::class
+        'FFMpeg' => ProtoneMedia\LaravelFFMpeg\Support\FFMpeg::class,
+        'Flavy' => Folour\Flavy\FlavyFacade::class
     ])->toArray(),
 
 ];

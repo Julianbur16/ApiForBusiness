@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "472d9f83432570636091adc688ed50eb",
+    "content-hash": "456db91193ed2ad97d79b69dec863f8a",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -627,6 +627,56 @@
                 "source": "https://github.com/igorw/evenement/tree/master"
             },
             "time": "2017-07-23T21:35:13+00:00"
+        },
+        {
+            "name": "folour/flavy",
+            "version": "v1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/folour/flavy.git",
+                "reference": "5e72bd8287cdd40090a16b73d81e072e4c08cdc0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/folour/flavy/zipball/5e72bd8287cdd40090a16b73d81e072e4c08cdc0",
+                "reference": "5e72bd8287cdd40090a16b73d81e072e4c08cdc0",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": ">=5.2",
+                "php": ">=5.5.9"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Folour\\Flavy\\": "src/Folour/Flavy"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPLv3"
+            ],
+            "authors": [
+                {
+                    "name": "Vadim Bova",
+                    "email": "folour@gmail.com"
+                }
+            ],
+            "description": "FFmpeg layer for Laravel 5.2-5.4, this is a fork of rafasamp/sonus package",
+            "keywords": [
+                "audio",
+                "conversion",
+                "converter",
+                "ffmpeg",
+                "laravel",
+                "video",
+                "video thumbnailer"
+            ],
+            "support": {
+                "issues": "https://github.com/folour/flavy/issues",
+                "source": "https://github.com/folour/flavy/tree/v1.0.2"
+            },
+            "time": "2017-05-08T22:22:48+00:00"
         },
         {
             "name": "fruitcake/php-cors",
