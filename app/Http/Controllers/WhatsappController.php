@@ -387,13 +387,6 @@ class WhatsappController extends Controller
 
                     file_put_contents($destinationPath, $fileContents);
 
-                    FFMpeg::fromDisk('public')
-                        ->open($destinationPath)
-                        ->export()
-                        ->toDisk('public')
-                        ->inFormat(new \FFMpeg\Format\Audio\Mp3())
-                        ->save($destinationPath1);
-
                     curl_setopt_array($curl, array(
                         CURLOPT_URL => 'https://api.openai.com/v1/audio/transcriptions',
                         CURLOPT_RETURNTRANSFER => true,
@@ -403,7 +396,7 @@ class WhatsappController extends Controller
                         CURLOPT_FOLLOWLOCATION => true,
                         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                         CURLOPT_CUSTOMREQUEST => 'POST',
-                        CURLOPT_POSTFIELDS => array('file' =>  new CURLFILE($destinationPath1), 'model' => 'whisper-1'),
+                        CURLOPT_POSTFIELDS => array('file' =>  new CURLFILE($destinationPath), 'model' => 'whisper-1'),
                         CURLOPT_HTTPHEADER => array(
                             'Authorization: Bearer ' . env('OPENAI_API_KEY')
                         ),
