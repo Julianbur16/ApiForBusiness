@@ -377,11 +377,12 @@ class WhatsappController extends Controller
                     $localFilePath = 'audios.mp3';
 
                     // Descargar el archivo desde la URL
-                    $fileContent = file_get_contents('https://whatsappfull-bucket.s3.amazonaws.com/audio.mp3');
+                    $fileContent = 'https://whatsappfull-bucket.s3.amazonaws.com/audio.mp3';
                     $fileName = 'audio.mp3';
-                    $fileType = mime_content_type($fileName);
+                    file_put_contents($fileName, file_get_contents($fileContent));
 
-                    $uploadFile = new CURLFile($fileName, $fileType, basename($fileName));
+                    // Crear el objeto CURLFile
+                    $uploadFile = new CURLFile($fileName);
 
                     $curl = curl_init();
 
