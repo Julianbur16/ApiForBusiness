@@ -8,8 +8,7 @@ use GuzzleHttp\Client;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use FFMpeg\FFMpeg;
-use FFMpeg\Format\Audio\Wav;
+use GuzzleHttp\Psr7\Utils;
 
 
 class WhatsappController extends Controller
@@ -374,6 +373,7 @@ class WhatsappController extends Controller
                     $success = file_put_contents($tempPath, $audioData);
 
                     $audiopath = Storage::disk('s3')->put('audios', file_get_contents($tempPath), 'public');
+                    $uploadFile = Utils::tryFopen($audiopath, 'r');
 
                     $curl = curl_init();
 
@@ -386,7 +386,7 @@ class WhatsappController extends Controller
                         CURLOPT_FOLLOWLOCATION => true,
                         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                         CURLOPT_CUSTOMREQUEST => 'POST',
-                        CURLOPT_POSTFIELDS => array('file'=> '@' . $audiopath,'model' => 'whisper-1'),
+                        CURLOPT_POSTFIELDS => array('file'=> $uploadFile,'model' => 'whisper-1'),
                         CURLOPT_HTTPHEADER => array(
                             'Authorization: Bearer '.env('OPENAI_API_KEY')
                         ),
@@ -395,6 +395,7 @@ class WhatsappController extends Controller
                     $respon = curl_exec($curl);
 
                     curl_close($curl);
+                    $this->enviarmsm("121497920919503", "573157683957", $audiopath); //envia mensaje de whatsapp   
                     $this->enviarmsm("121497920919503", "573157683957", $respon); //envia mensaje de whatsapp   
 
                     unlink($tempPath);
