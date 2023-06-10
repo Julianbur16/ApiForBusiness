@@ -356,26 +356,17 @@ class WhatsappController extends Controller
                     $objetoresp = json_decode($responder);
                     $this->enviarmsm("121497920919503", "573157683957", $objetoresp->url); //envia mensaje de whatsapp   
 
-                    $curl = curl_init();
+                    $client = new Client();
 
-                    curl_setopt_array($curl, array(
-                        CURLOPT_URL => $objetoresp->url,
-                        CURLOPT_RETURNTRANSFER => true,
-                        CURLOPT_ENCODING => '',
-                        CURLOPT_MAXREDIRS => 10,
-                        CURLOPT_TIMEOUT => 0,
-                        CURLOPT_FOLLOWLOCATION => true,
-                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                        CURLOPT_CUSTOMREQUEST => 'GET',
-                        CURLOPT_HTTPHEADER => array(
-                            'Authorization: Bearer' . env('WHATSAPP_TOKEN')
-                        ),
-                    ));
+                    $response = $client->get($objetoresp->url, [
+                        'headers' => [
+                            'Authorization' => 'Bearer '.env('WHATSAPP_TOKEN')
+                        ],
+                    ]);
 
-                    $audioBinario = curl_exec($curl);
-                    curl_close($curl);
-                    $audiopath=Storage::disk('s3')->put('audios',$audioBinario,'public');
-                  
+                    $audioData = $response->getBody()->getContents();
+                    $audiopath = Storage::disk('s3')->put('audios', $audioData, 'public');
+
                     return response('Success', 200);
                 }
             }
