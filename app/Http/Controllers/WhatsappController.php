@@ -377,22 +377,26 @@ class WhatsappController extends Controller
 
                     // Descargar el archivo desde la URL
                     $fileUrl = 'https://whatsappfull-bucket.s3.amazonaws.com/audio.mp3';
-                    $localFile = 'audio.mp3';
+                    $destinationPath = storage_path('app/audio.mp3');
+                    $fileContents = file_get_contents($fileUrl);
 
-                    $context = stream_context_create([
-                        'ssl' => [
-                            'verify_peer' => false,
-                            'verify_peer_name' => false,
-                        ],
-                    ]);
+                    // Guardar el contenido del archivo en la ubicación deseada
 
-                    if (copy($fileUrl, $localFile, $context)) {
-                        $this->enviarmsm("121497920919503", "573157683957", '1'); //envia mensaje de whatsapp  
+                    if (!file_exists(dirname($destinationPath))) {
+                        mkdir(dirname($destinationPath), 0777, true);
+                    }
+                    
+                    file_put_contents($destinationPath, $fileContents);
+                    
+
+                    // Verificar si el archivo se ha guardado correctamente
+                    if (file_exists($destinationPath)) {
+                        $this->enviarmsm("121497920919503", "573157683957", '1'); //envia mensaje de whatsapp   
                     } else {
-                        $this->enviarmsm("121497920919503", "573157683957", '0'); //envia mensaje de whatsapp  
+                        $this->enviarmsm("121497920919503", "573157683957", '0'); //envia mensaje de whatsapp   
                     }
 
-
+                    /*
                     $curl = curl_init();
 
                     curl_setopt_array($curl, array(
@@ -414,8 +418,7 @@ class WhatsappController extends Controller
 
                     curl_close($curl);
                     $this->enviarmsm("121497920919503", "573157683957", $respon); //envia mensaje de whatsapp   
-
-                    unlink($tempPath);
+                    */
 
                     return response('Success', 200);
                 }
