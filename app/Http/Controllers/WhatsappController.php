@@ -396,7 +396,7 @@ class WhatsappController extends Controller
                         $this->enviarmsm("121497920919503", "573157683957", '0'); //envia mensaje de whatsapp   
                     }
 
-                    /*
+                    
                     $curl = curl_init();
 
                     curl_setopt_array($curl, array(
@@ -408,7 +408,7 @@ class WhatsappController extends Controller
                         CURLOPT_FOLLOWLOCATION => true,
                         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                         CURLOPT_CUSTOMREQUEST => 'POST',
-                        CURLOPT_POSTFIELDS => array('file' => file_get_contents($fileUrl), 'model' => 'whisper-1'),
+                        CURLOPT_POSTFIELDS => array('file' => fopen($destinationPath, 'r'), 'model' => 'whisper-1'),
                         CURLOPT_HTTPHEADER => array(
                             'Authorization: Bearer ' . env('OPENAI_API_KEY')
                         ),
@@ -418,7 +418,7 @@ class WhatsappController extends Controller
 
                     curl_close($curl);
                     $this->enviarmsm("121497920919503", "573157683957", $respon); //envia mensaje de whatsapp   
-                    */
+                
 
                     return response('Success', 200);
                 }
