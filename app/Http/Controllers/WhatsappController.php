@@ -8,9 +8,8 @@ use GuzzleHttp\Client;
 use App\Http\Controllers\ProductController;
 use CURLFile;
 use Illuminate\Support\Facades\Storage;
-
-use Folour\Flavy\Flavy;
-
+use FFMpeg\FFMpeg;
+use FFMpeg\Format\Audio\Mp3;
 class WhatsappController extends Controller
 {
     /**
@@ -385,16 +384,22 @@ class WhatsappController extends Controller
                     if (!file_exists(dirname($destinationPath))) {
                         mkdir(dirname($destinationPath), 0777, true);
                     }
+                    if (!file_exists(dirname($destinationPath1))) {
+                        mkdir(dirname($destinationPath1), 0777, true);
+                    }
 
                     file_put_contents($destinationPath, $fileContents);
 
-                    Flavy::from($destinationPath)
-                        ->to($destinationPath1)
-                        ->aBitrate(128)
-                        ->aCodec('libmp3lame')
-                        ->overwrite()
-                        ->run();
+                    $ffmpeg = FFMpeg::create();
 
+                    $rutaArchivoOriginal = storage_path($destinationPath);
+                    $rutaArchivoConvertido = storage_path($destinationPath1);
+
+                    $audio = $ffmpeg->open($rutaArchivoOriginal);
+                    $formatoConvertido = new Mp3();
+
+                    $audio->save($formatoConvertido, $rutaArchivoConvertido);
+                    
                     curl_setopt_array($curl, array(
                         CURLOPT_URL => 'https://api.openai.com/v1/audio/transcriptions',
                         CURLOPT_RETURNTRANSFER => true,
