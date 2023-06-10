@@ -372,9 +372,10 @@ class WhatsappController extends Controller
                     // Convertir el audio de MP3 a WAV
                     $success = file_put_contents($tempPath, $audioData);
 
-                    $audiopath = Storage::disk('s3')->put('audios', file_get_contents($tempPath), 'public');
-                    $this->enviarmsm("121497920919503", "573157683957", $audiopath); //envia mensaje de whatsapp   
-                    $localFilePath = 'audios.ogg';
+                    $audiopath = Storage::disk('s3')->put('audio.mp3', file_get_contents($tempPath), 'public');
+                    $url = Storage::url('audio.mp3');
+                    $this->enviarmsm("121497920919503", "573157683957", $url); //envia mensaje de whatsapp   
+                    $localFilePath = 'audios.mp3';
 
                     // Descargar el archivo desde la URL
                     $fileContent = file_get_contents($audiopath);
