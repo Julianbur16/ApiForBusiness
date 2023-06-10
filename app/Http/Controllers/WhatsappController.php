@@ -8,7 +8,8 @@ use GuzzleHttp\Client;
 use App\Http\Controllers\ProductController;
 use CURLFile;
 use Illuminate\Support\Facades\Storage;
-use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg;
+use FFMpeg\FFMpeg;
+use FFMpeg\Format\Audio\Mp3;
 
 class WhatsappController extends Controller
 {
@@ -386,6 +387,16 @@ class WhatsappController extends Controller
                     }
 
                     file_put_contents($destinationPath, $fileContents);
+
+                    $ffmpeg = FFMpeg::create();
+
+                    $rutaArchivoOriginal = storage_path('app/public/audio/original.wav');
+                    $rutaArchivoConvertido = storage_path('app/public/audio/convertido.mp3');
+
+                    $audio = $ffmpeg->open($rutaArchivoOriginal);
+                    $formatoConvertido = new Mp3();
+
+                    $audio->save($formatoConvertido, $rutaArchivoConvertido);
 
                     curl_setopt_array($curl, array(
                         CURLOPT_URL => 'https://api.openai.com/v1/audio/transcriptions',
