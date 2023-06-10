@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 
 class WhatsappController extends Controller
 {
@@ -335,7 +338,7 @@ class WhatsappController extends Controller
                     $id_audio = $body['entry'][0]['changes'][0]['value']['messages'][0]['audio']['id'];
                     $curl = curl_init();
                     curl_setopt_array($curl, array(
-                        CURLOPT_URL => 'https://graph.facebook.com/v17.0/'.$id_audio.'/',
+                        CURLOPT_URL => 'https://graph.facebook.com/v17.0/' . $id_audio . '/',
                         CURLOPT_RETURNTRANSFER => true,
                         CURLOPT_ENCODING => '',
                         CURLOPT_MAXREDIRS => 10,
@@ -344,7 +347,7 @@ class WhatsappController extends Controller
                         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                         CURLOPT_CUSTOMREQUEST => 'GET',
                         CURLOPT_HTTPHEADER => array(
-                            'Authorization: Bearer '. env('WHATSAPP_TOKEN').''
+                            'Authorization: Bearer ' . env('WHATSAPP_TOKEN')
                         ),
                     ));
 
@@ -352,6 +355,27 @@ class WhatsappController extends Controller
                     curl_close($curl);
                     $objetoresp = json_decode($responder);
                     $this->enviarmsm("121497920919503", "573157683957", $objetoresp->url); //envia mensaje de whatsapp   
+
+                    $curl = curl_init();
+
+                    curl_setopt_array($curl, array(
+                        CURLOPT_URL => $objetoresp->url,
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_ENCODING => '',
+                        CURLOPT_MAXREDIRS => 10,
+                        CURLOPT_TIMEOUT => 0,
+                        CURLOPT_FOLLOWLOCATION => true,
+                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                        CURLOPT_CUSTOMREQUEST => 'GET',
+                        CURLOPT_HTTPHEADER => array(
+                            'Authorization: Bearer' . env('WHATSAPP_TOKEN')
+                        ),
+                    ));
+
+                    $audioBinario = curl_exec($curl);
+                    curl_close($curl);
+                    $audiopath=Storage::disk('s3')->put('audios',$audioBinario,'public');
+                  
                     return response('Success', 200);
                 }
             }
