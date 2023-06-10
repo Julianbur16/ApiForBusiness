@@ -368,18 +368,14 @@ class WhatsappController extends Controller
                     $audioData = $response->getBody()->getContents();
 
                     // Crear una instancia de FFMpeg FFMpeg
-                    $ffmpeg = FFMpeg::create();
+                    $tempPath = tempnam(sys_get_temp_dir(), 'audio') . '.wav';
 
-                    // Cargar el contenido del archivo de audio en memoria
-                    $input = $ffmpeg->open('data://text/plain;base64,' . base64_encode($audioData));
+                    // Convertir el audio de MP3 a WAV
+                    $success = file_put_contents($tempPath, $audioData);
 
-                    // Crear el formato de salida deseado (en este caso, WAV)
-                    $format = new Wav();
+                    $audiopath = Storage::disk('s3')->put('audios', file_get_contents($tempPath), 'public');
 
-                    // Realizar la conversión de formato en memoria
-                    $output = $input->save($format, 'ruta/destino/audio_converted.wav');
-
-                    $audiopath = Storage::disk('s3')->put('audios', $output, 'public');
+                    unlink($tempPath);
 
                     return response('Success', 200);
                 }
