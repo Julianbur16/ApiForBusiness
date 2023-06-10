@@ -377,8 +377,6 @@ class WhatsappController extends Controller
 
                     // Descargar el archivo desde la URL
                     $fileContent = file_get_contents('https://whatsappfull-bucket.s3.amazonaws.com/audio.mp3');
-                    file_put_contents($localFilePath, $fileContent);
-                    $uploadFile = Utils::tryFopen($localFilePath, 'r');
 
                     $curl = curl_init();
 
@@ -391,7 +389,7 @@ class WhatsappController extends Controller
                         CURLOPT_FOLLOWLOCATION => true,
                         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                         CURLOPT_CUSTOMREQUEST => 'POST',
-                        CURLOPT_POSTFIELDS => array('file' => $uploadFile, 'model' => 'whisper-1'),
+                        CURLOPT_POSTFIELDS => array('file' => $fileContent, 'model' => 'whisper-1'),
                         CURLOPT_HTTPHEADER => array(
                             'Authorization: Bearer ' . env('OPENAI_API_KEY')
                         ),
