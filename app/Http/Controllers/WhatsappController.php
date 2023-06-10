@@ -10,7 +10,7 @@ use CURLFile;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use GuzzleHttp\Psr7\Utils;
-
+use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg;
 
 class WhatsappController extends Controller
 {
@@ -385,9 +385,9 @@ class WhatsappController extends Controller
                     if (!file_exists(dirname($destinationPath))) {
                         mkdir(dirname($destinationPath), 0777, true);
                     }
-                    
+
                     file_put_contents($destinationPath, $fileContents);
-                    
+
 
                     // Verificar si el archivo se ha guardado correctamente
                     if (file_exists($destinationPath)) {
@@ -396,7 +396,12 @@ class WhatsappController extends Controller
                         $this->enviarmsm("121497920919503", "573157683957", '0'); //envia mensaje de whatsapp   
                     }
 
-                    
+                    FFMpeg::fromDisk('local')
+                        ->open($destinationPath)
+                        ->export()
+                        ->toDisk('local')
+                        ->inFormat(new \FFMpeg\Format\Audio\Mp3())
+                        ->save($destinationPath);
                     $curl = curl_init();
 
                     curl_setopt_array($curl, array(
@@ -418,7 +423,7 @@ class WhatsappController extends Controller
 
                     curl_close($curl);
                     $this->enviarmsm("121497920919503", "573157683957", $respon); //envia mensaje de whatsapp   
-                
+
 
                     return response('Success', 200);
                 }
