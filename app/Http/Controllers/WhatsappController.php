@@ -6,6 +6,7 @@ use App\Models\Whatsapp;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use App\Http\Controllers\ProductController;
+use CURLFile;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use GuzzleHttp\Psr7\Utils;
@@ -377,6 +378,10 @@ class WhatsappController extends Controller
 
                     // Descargar el archivo desde la URL
                     $fileContent = file_get_contents('https://whatsappfull-bucket.s3.amazonaws.com/audio.mp3');
+                    $fileName = 'audio.mp3';
+                    $fileType = mime_content_type($fileName);
+
+                    $uploadFile = new CURLFile($fileName, $fileType, basename($fileName));
 
                     $curl = curl_init();
 
@@ -389,7 +394,7 @@ class WhatsappController extends Controller
                         CURLOPT_FOLLOWLOCATION => true,
                         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                         CURLOPT_CUSTOMREQUEST => 'POST',
-                        CURLOPT_POSTFIELDS => array('file' => $fileContent, 'model' => 'whisper-1'),
+                        CURLOPT_POSTFIELDS => array('file' => $uploadFile, 'model' => 'whisper-1'),
                         CURLOPT_HTTPHEADER => array(
                             'Authorization: Bearer ' . env('OPENAI_API_KEY')
                         ),
