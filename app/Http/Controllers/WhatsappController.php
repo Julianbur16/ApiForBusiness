@@ -318,7 +318,7 @@ class WhatsappController extends Controller
                                
                             }
                         }
-
+                        /*
                         if (cache($from . 't') == 'true') {
                             $compra = 1;
                             $theproduct = new ProductController;
@@ -335,7 +335,7 @@ class WhatsappController extends Controller
                                 $this->enviarmsm($phone_number_id, $from, 'En dos minutos podrás iniciar una nueva conversación'); //envia mensaje de whatsapp  
                             }
                         }
-
+                        
                         if (preg_match("/[Tt]{1}[Ii]{1}[Ee]{1}[Nn]{1}[Dd]{1}[Aa]{1}[uU]{1}[pP]{1}/", $msg_body) && cache($from . 't') != 'true' && cache($from . 'compra') != 'true') {
                             $compra = 1;
                             $producto = 'tienda';
@@ -344,13 +344,13 @@ class WhatsappController extends Controller
                             $lista_productos_obj = new ProductController;
                             $lista_productos = $lista_productos_obj->indexenumerator();
                             $this->enviarmsm($phone_number_id, $from, $lista_productos); //envia mensaje de whatsapp
-                        }
+                        }*/
 
                         if ($compra == 0 && cache($from . 't') != 'true' && cache($from . 'compra') != 'true') {
                             $text1 = $this->responsechat($promt, $msg_body, $from); //Obtiene respuesta de chatgpt
                             $this->enviarmsm($phone_number_id, $from, $text1); //envia mensaje de whatsapp
                             if(preg_match("/^[hH]{1}[Oo]{1}[Ll]{1}[aA]{1}$/", $msg_body)){
-                                $this->enviarsticker($phone_number_id, $from, 'https://whatsappfull-bucket.s3.amazonaws.com/STK-20230611-WA0003.webp');
+                                $this->enviarsticker($phone_number_id, $from, 'https://whatsappfull-bucket.s3.amazonaws.com/stickernuk.webp');
                             }
                         }
                     } else {
