@@ -240,8 +240,7 @@ class WhatsappController extends Controller
 
         if (isset($body['object'])) {
             if (isset($body['entry']) && isset($body['entry'][0]['changes']) && isset($body['entry'][0]['changes'][0]['value']['messages']) && isset($body['entry'][0]['changes'][0]['value']['messages'][0])) {
-                $cuerpo = json_encode($body);
-                $this->enviarmsm("121497920919503", "573157683957", $cuerpo); //envia mensaje de whatsapp
+
                 $phone_number_id = $body['entry'][0]['changes'][0]['value']['metadata']['phone_number_id'];
                 $from = $body['entry'][0]['changes'][0]['value']['messages'][0]['from']; // Extrae numero
 
@@ -330,84 +329,14 @@ class WhatsappController extends Controller
 
                 if (isset($body['entry'][0]['changes'][0]['value']['messages'][0]['image']['id'])) {
                     $id_image = $body['entry'][0]['changes'][0]['value']['messages'][0]['image']['id'];
-                    $this->enviarmsm("121497920919503", "573157683957", 'imagen id ' . $id_image); //envia mensaje de whatsapp   
+                    $this->enviarmsm("121497920919503", "573157683957", 'En futuras actualizaciones podremos procesar tu imagen'); //envia mensaje de whatsapp   
                     return response('Success', 200);
                 }
 
                 if (isset($body['entry'][0]['changes'][0]['value']['messages'][0]['audio']['id'])) {
                     $id_audio = $body['entry'][0]['changes'][0]['value']['messages'][0]['audio']['id'];
-                    $curl = curl_init();
-                    curl_setopt_array($curl, array(
-                        CURLOPT_URL => 'https://graph.facebook.com/v17.0/' . $id_audio . '/',
-                        CURLOPT_RETURNTRANSFER => true,
-                        CURLOPT_ENCODING => '',
-                        CURLOPT_MAXREDIRS => 10,
-                        CURLOPT_TIMEOUT => 0,
-                        CURLOPT_FOLLOWLOCATION => true,
-                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                        CURLOPT_CUSTOMREQUEST => 'GET',
-                        CURLOPT_HTTPHEADER => array(
-                            'Authorization: Bearer ' . env('WHATSAPP_TOKEN')
-                        ),
-                    ));
 
-                    $responder = curl_exec($curl);
-                    curl_close($curl);
-                    $objetoresp = json_decode($responder);
-                    $this->enviarmsm("121497920919503", "573157683957", $objetoresp->url); //envia mensaje de whatsapp   
-
-                    $client = new Client();
-
-                    $response = $client->get($objetoresp->url, [
-                        'headers' => [
-                            'Authorization' => 'Bearer ' . env('WHATSAPP_TOKEN')
-                        ],
-                    ]);
-
-                    $audioData = $response->getBody()->getContents();
-
-                    // Crear una instancia de FFMpeg FFMpeg
-                    $tempPath = tempnam(sys_get_temp_dir(), 'audio') . '.mp3';
-
-                    // Convertir el audio de MP3 a WAV
-                    $success = file_put_contents($tempPath, $audioData);
-
-                    $audiopath = Storage::disk('s3')->put('audio.mp3', file_get_contents($tempPath), 'public');
-
-                    // Descargar el archivo desde la URL
-                    $fileUrl = 'https://whatsappfull-bucket.s3.amazonaws.com/audio.mp3';
-                    $destinationPath = storage_path('app/audio.mp3');
-                    $fileContents = file_get_contents($fileUrl);
-
-                    // Guardar el contenido del archivo en la ubicación deseada
-
-                    if (!file_exists(dirname($destinationPath))) {
-                        mkdir(dirname($destinationPath), 0777, true);
-                    }
-
-                    file_put_contents($destinationPath, $fileContents);
-
-      
-                    
-                    curl_setopt_array($curl, array(
-                        CURLOPT_URL => 'https://api.openai.com/v1/audio/transcriptions',
-                        CURLOPT_RETURNTRANSFER => true,
-                        CURLOPT_ENCODING => '',
-                        CURLOPT_MAXREDIRS => 10,
-                        CURLOPT_TIMEOUT => 0,
-                        CURLOPT_FOLLOWLOCATION => true,
-                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                        CURLOPT_CUSTOMREQUEST => 'POST',
-                        CURLOPT_POSTFIELDS => array('file' =>  new CURLFILE($destinationPath), 'model' => 'whisper-1'),
-                        CURLOPT_HTTPHEADER => array(
-                            'Authorization: Bearer ' . env('OPENAI_API_KEY')
-                        ),
-                    ));
-
-                    $respon = curl_exec($curl);
-
-                    curl_close($curl);
-                    $this->enviarmsm("121497920919503", "573157683957", $respon); //envia mensaje de whatsapp   
+                    $this->enviarmsm("121497920919503", "573157683957", 'En futuras actualzaciones podre escuchar tus audios'); //envia mensaje de whatsapp   
 
 
                     return response('Success', 200);
