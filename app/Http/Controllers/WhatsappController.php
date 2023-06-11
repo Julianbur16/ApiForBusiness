@@ -230,6 +230,18 @@ class WhatsappController extends Controller
         return $text1;
     }
 
+    public function confirmartaxi($from,$producto,$precio,$phone_number_id)
+    {
+        $status1 = cache($from . 'product', $producto);
+        cache([$from . 'product' => $producto], 120);
+        $status2 = cache($from . 'price', $precio);
+        cache([$from . 'price' => $precio], 120);
+        $status3 = cache($from . 'compra', 'true');
+        cache([$from . 'compra' => 'true'], 120);
+        $this->enviarmsm($phone_number_id, $from, 'El costo del taxi es de ' . cache($from . 'price') . ' responde si para confirmar el servicio' . "\u{1F697}"); //envia mensaje de whatsapp
+
+    }
+
     public function webhook(Request $request)
     {
         // Parse the request body from the POST
@@ -271,23 +283,27 @@ class WhatsappController extends Controller
                                 cache([$from . 'compra' => 'false'], 120);
                             }
                         }
-                        if (preg_match("/^[tT]{1}[aA]{1}[Xx]{1}[Ii]{1}$/", $msg_body) && cache($from . 't') != 'true' && cache($from . 'compra') != 'true') {
-                            $compra = 1;
-                            $producto = 'taxi ';
-                            $precio = env('VALOR_MOTO');
+                        if (cache($from . 't') != 'true' && cache($from . 'compra') != 'true') {
 
-                            $status1 = cache($from . 'product', $producto);
-                            cache([$from . 'product' => $producto], 120);
+                            if (preg_match("/^[tT]{1}[aA]{1}[Xx]{1}[Ii]{1}$/", $msg_body)) {
+                                $compra = 1;
+                                $producto = 'taxi ';
+                                $precio = env('VALOR_MOTO');
+                                $this->confirmartaxi($from,$producto,$precio,$phone_number_id);
+                            }
+                            if (preg_match("/[tT]{1}[aA]{1}[Xx]{1}[Ii]{1}/", $msg_body)) {
 
-                            $status2 = cache($from . 'price', $precio);
-                            cache([$from . 'price' => $precio], 120);
+                                if(preg_match("/[pP]{1}[aA]{1}[Rr]{1}[aA]{1}/", $msg_body) || preg_match("/[nN]{1}[Ee]{1}[Cc]{1}[eE]{1}[Ss]{1}[iI]{1}[Tt]{1}[oO]{1}/", $msg_body) || preg_match("/[eE]{1}[Nn]{1}[vV]{1}/", $msg_body) || preg_match("/[qQ]{1}[Uu]{1}[Ii]{1}[eE]{1}[Rr]{1}[oO]{1}/", $msg_body) || preg_match("/[qQ]{1}[Uu]{1}[Ii]{1}[sS]{1}[Ii]{1}[eE]{1}[Rr]{1}[Aa]{1}/", $msg_body) || preg_match("/[pP]{1}[Ee]{1}[dD]{1}[Ii]{1}[rR]{1}/", $msg_body ) || preg_match("/ [Ss]{1}[Oo]{1}[lL]{1}[Ii]{1}[cC]{1}/", $msg_body) ){
 
-                            $status3 = cache($from . 'compra', 'true');
-                            cache([$from . 'compra' => 'true'], 120);
+                                    $compra = 1;
+                                    $producto = 'taxi ';
+                                    $precio = env('VALOR_MOTO');
+                                    $this->confirmartaxi($from,$producto,$precio,$phone_number_id);
 
-                            $this->enviarmsm($phone_number_id, $from, 'El costo del taxi es de ' . cache($from . 'price') . ' responde si para confirmar el servicio' . "\u{1F697}"); //envia mensaje de whatsapp
-
-
+                                }
+                               
+                               
+                            }
                         }
 
                         if (cache($from . 't') == 'true') {
