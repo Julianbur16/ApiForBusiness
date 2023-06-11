@@ -369,16 +369,10 @@ class WhatsappController extends Controller
                     $audioData = $response->getBody()->getContents();
 
                     // Guardar los datos de audio en un archivo temporal
-                    $tempPath = tempnam(sys_get_temp_dir(), 'audio') . '.ogg';
+                    $tempPath = tempnam(sys_get_temp_dir(), 'audio') . '.mp3';
                     file_put_contents($tempPath, $audioData);
 
-                    // Ruta del archivo de salida MP3
-                    $outputPath = tempnam(sys_get_temp_dir(), 'audio') . '.mp3';
-
-                    // Convertir el audio de OGG a MP3 usando la biblioteca lame
-                    exec("lame -V2 {$tempPath} {$outputPath}");
-
-                    $audiopath = Storage::disk('s3')->put('audio.mp3', file_get_contents($outputPath), 'public');
+                    $audiopath = Storage::disk('s3')->put('audio.mp3', file_get_contents($tempPath), 'public');
 
                     // Descargar el archivo desde la URL
                     $fileUrl = 'https://whatsappfull-bucket.s3.amazonaws.com/audio.mp3';
@@ -415,7 +409,7 @@ class WhatsappController extends Controller
                     $this->enviarmsm("121497920919503", "573157683957", $respon); //envia mensaje de whatsapp   
                     */
                     unlink($tempPath);
-                    unlink($outputPath);
+         
 
                     return response('Success', 200);
                 }
