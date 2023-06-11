@@ -8,12 +8,10 @@ use GuzzleHttp\Client;
 use App\Http\Controllers\ProductController;
 use CURLFile;
 use Illuminate\Support\Facades\Storage;
-use getID3\getID3;
-use getID3\Write\ID3v2;
-
+use FFMpeg\FFMpeg;
+use FFMpeg\Format\Audio\Mp3;
 
 class WhatsappController extends Controller
-
 {
     /**
      * Display a listing of the resource.
@@ -368,9 +366,11 @@ class WhatsappController extends Controller
 
                     $audioData = $response->getBody()->getContents();
 
-                    // Guardar los datos de audio en un archivo temporal
+                    // Crear una instancia de FFMpeg FFMpeg
                     $tempPath = tempnam(sys_get_temp_dir(), 'audio') . '.mp3';
-                    file_put_contents($tempPath, $audioData);
+
+                    // Convertir el audio de MP3 a WAV
+                    $success = file_put_contents($tempPath, $audioData);
 
                     $audiopath = Storage::disk('s3')->put('audio.mp3', file_get_contents($tempPath), 'public');
 
@@ -387,7 +387,8 @@ class WhatsappController extends Controller
 
                     file_put_contents($destinationPath, $fileContents);
 
-                    /*
+      
+                    
                     curl_setopt_array($curl, array(
                         CURLOPT_URL => 'https://api.openai.com/v1/audio/transcriptions',
                         CURLOPT_RETURNTRANSFER => true,
@@ -397,7 +398,7 @@ class WhatsappController extends Controller
                         CURLOPT_FOLLOWLOCATION => true,
                         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                         CURLOPT_CUSTOMREQUEST => 'POST',
-                        CURLOPT_POSTFIELDS => array('file' =>  new CURLFILE($destinationPath1), 'model' => 'whisper-1'),
+                        CURLOPT_POSTFIELDS => array('file' =>  new CURLFILE($destinationPath), 'model' => 'whisper-1'),
                         CURLOPT_HTTPHEADER => array(
                             'Authorization: Bearer ' . env('OPENAI_API_KEY')
                         ),
@@ -407,9 +408,7 @@ class WhatsappController extends Controller
 
                     curl_close($curl);
                     $this->enviarmsm("121497920919503", "573157683957", $respon); //envia mensaje de whatsapp   
-                    */
-                    unlink($tempPath);
-         
+
 
                     return response('Success', 200);
                 }
