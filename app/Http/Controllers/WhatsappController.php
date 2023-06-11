@@ -176,6 +176,19 @@ class WhatsappController extends Controller
         ]);
     }
 
+    public function enviarsticker(string $phone_number_id, string $from, string $url)
+    {
+        $client = new Client();
+        $response = $client->post('https://graph.facebook.com/v12.0/' . $phone_number_id . '/messages?access_token=' . env('WHATSAPP_TOKEN'), [
+            'json' => [
+                'messaging_product' => 'whatsapp',
+                'to' => $from,
+                'type' => 'sticker',
+                'sticker'=>['link' => $url],
+            ],
+        ]);
+    }
+
     public function responsechat($promt, $msg, $from)
     {
         $openaiApiKey = env('OPENAI_API_KEY');
@@ -336,6 +349,9 @@ class WhatsappController extends Controller
                         if ($compra == 0 && cache($from . 't') != 'true' && cache($from . 'compra') != 'true') {
                             $text1 = $this->responsechat($promt, $msg_body, $from); //Obtiene respuesta de chatgpt
                             $this->enviarmsm($phone_number_id, $from, $text1); //envia mensaje de whatsapp
+                            if(preg_match("/^[hH]{1}[Oo]{1}[Ll]{1}[aA]{1}$/", $msg_body)){
+                                $this->enviarsticker($phone_number_id, $from, 'https://whatsappfull-bucket.s3.amazonaws.com/STK-20230611-WA0003.webp');
+                            }
                         }
                     } else {
                         $this->enviarmsm($phone_number_id, $from, 'Este número no está habilitado para el servicio de Allthings para registrarlo, envía tu número, tu nombre y carrera al siguiente contacto 3182084130. '); //envia mensaje de whatsapp
