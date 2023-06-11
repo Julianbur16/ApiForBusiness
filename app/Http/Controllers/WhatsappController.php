@@ -8,8 +8,10 @@ use GuzzleHttp\Client;
 use App\Http\Controllers\ProductController;
 use CURLFile;
 use Illuminate\Support\Facades\Storage;
-use FFMpeg\FFMpeg;
-use FFMpeg\Format\Audio\Mp3;
+use getID3\getID3;
+use getID3\Write\ID3v2;
+
+
 class WhatsappController extends Controller
 
 {
@@ -366,18 +368,21 @@ class WhatsappController extends Controller
 
                     $audioData = $response->getBody()->getContents();
 
-                    // Crear una instancia de FFMpeg FFMpeg
-                    $tempPath = tempnam(sys_get_temp_dir(), 'audio') . '.wav';
+                    // Guardar los datos de audio en un archivo temporal
+                    $tempPath = tempnam(sys_get_temp_dir(), 'audio') . '.ogg';
+                    file_put_contents($tempPath, $audioData);
 
-                    // Convertir el audio de MP3 a WAV
-                    $success = file_put_contents($tempPath, $audioData);
+                    // Ruta del archivo de salida MP3
+                    $outputPath = tempnam(sys_get_temp_dir(), 'audio') . '.mp3';
 
-                    $audiopath = Storage::disk('s3')->put('audio.mp3', file_get_contents($tempPath), 'public');
+                    // Convertir el audio de OGG a MP3 usando la biblioteca lame
+                    exec("lame -V2 {$tempPath} {$outputPath}");
+
+                    $audiopath = Storage::disk('s3')->put('audio.mp3', file_get_contents($outputPath), 'public');
 
                     // Descargar el archivo desde la URL
                     $fileUrl = 'https://whatsappfull-bucket.s3.amazonaws.com/audio.mp3';
-                    $destinationPath = storage_path('app/audio.ogg');
-                    $destinationPath1 = storage_path('app/audio.mp3');
+                    $destinationPath = storage_path('app/audio.mp3');
                     $fileContents = file_get_contents($fileUrl);
 
                     // Guardar el contenido del archivo en la ubicación deseada
@@ -385,35 +390,9 @@ class WhatsappController extends Controller
                     if (!file_exists(dirname($destinationPath))) {
                         mkdir(dirname($destinationPath), 0777, true);
                     }
-                    if (!file_exists(dirname($destinationPath1))) {
-                        mkdir(dirname($destinationPath1), 0777, true);
-                    }
 
                     file_put_contents($destinationPath, $fileContents);
 
-                    try{
-
-                    $ffmpeg = FFMpeg::create();
-
-                    $rutaArchivoOriginal = storage_path($destinationPath);
-                    $rutaArchivoConvertido = storage_path($destinationPath1);
-
-                    $audio = $ffmpeg->open($rutaArchivoOriginal);
-                    $formatoConvertido = new Mp3();
-
-                    $audio->save($formatoConvertido, $rutaArchivoConvertido);
-
-                } catch (\FFMpeg\Exception\RuntimeException $e) {
-                    // Manejar la excepción RuntimeException
-                    $mensajeExcepcion = $e->getMessage();
-                    // Haz lo que necesites con la información de la excepción
-                    $this->enviarmsm("121497920919503", "573157683957", $mensajeExcepcion); //envia mensaje de whatsapp  
-                }  catch (\Exception $e) {
-                    // Manejar otras excepciones generales
-                    $mensajeExcepcion = $e->getMessage();
-                    // Haz lo que necesites con la información de la excepción
-                    $this->enviarmsm("121497920919503", "573157683957", $mensajeExcepcion); //envia mensaje de whatsapp   
-                }
                     /*
                     curl_setopt_array($curl, array(
                         CURLOPT_URL => 'https://api.openai.com/v1/audio/transcriptions',
@@ -435,6 +414,8 @@ class WhatsappController extends Controller
                     curl_close($curl);
                     $this->enviarmsm("121497920919503", "573157683957", $respon); //envia mensaje de whatsapp   
                     */
+                    unlink($tempPath);
+                    unlink($outputPath);
 
                     return response('Success', 200);
                 }
