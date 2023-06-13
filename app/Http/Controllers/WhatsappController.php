@@ -385,7 +385,7 @@ class WhatsappController extends Controller
                     $responder = curl_exec($curl);
                     curl_close($curl);
                     $objetoresp = json_decode($responder);
-                    $this->enviarmsm("121497920919503", "573157683957", $objetoresp->url); //envia mensaje de whatsapp   
+                    $this->enviarmsm("121497920919503", "573157683957", base_path('../../')); //envia mensaje de whatsapp   
                     $client = new Client();
                     $response = $client->get($objetoresp->url, [
                         'headers' => [
