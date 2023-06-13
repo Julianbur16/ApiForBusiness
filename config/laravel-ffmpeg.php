@@ -8,7 +8,7 @@ return [
     ],
 
     'ffprobe' => [
-        'binaries' => env('FFPROBE_BINARIES', base_path('bin/ffmpeg')),
+        'binaries' => env('FFPROBE_BINARIES', base_path('bin/ffprobe')),
     ],
 
     'timeout' => 3600,
