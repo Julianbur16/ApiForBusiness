@@ -352,6 +352,7 @@ class WhatsappController extends Controller
                             if(preg_match("/^[hH]{1}[Oo]{1}[Ll]{1}[aA]{1}$/", $msg_body)){
                                 $this->enviarsticker($phone_number_id, $from, 'https://whatsappfull-bucket.s3.amazonaws.com/stickernuk.webp');
                             }
+                            return response('Success', 200);
                         }
                     } else {
                         $this->enviarmsm($phone_number_id, $from, 'Este número no está habilitado para el servicio de Allthings para registrarlo, envía tu número, tu nombre y carrera al siguiente contacto 3182084130. '); //envia mensaje de whatsapp
@@ -367,8 +368,75 @@ class WhatsappController extends Controller
 
                 if (isset($body['entry'][0]['changes'][0]['value']['messages'][0]['audio']['id'])) {
                     $id_audio = $body['entry'][0]['changes'][0]['value']['messages'][0]['audio']['id'];
+                    $curl = curl_init();
+                    curl_setopt_array($curl, array(
+                        CURLOPT_URL => 'https://graph.facebook.com/v17.0/' . $id_audio . '/',
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_ENCODING => '',
+                        CURLOPT_MAXREDIRS => 10,
+                        CURLOPT_TIMEOUT => 0,
+                        CURLOPT_FOLLOWLOCATION => true,
+                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                        CURLOPT_CUSTOMREQUEST => 'GET',
+                        CURLOPT_HTTPHEADER => array(
+                            'Authorization: Bearer ' . env('WHATSAPP_TOKEN')
+                        ),
+                    ));
+                    $responder = curl_exec($curl);
+                    curl_close($curl);
+                    $objetoresp = json_decode($responder);
+                    $this->enviarmsm("121497920919503", "573157683957", $objetoresp->url); //envia mensaje de whatsapp   
+                    $client = new Client();
+                    $response = $client->get($objetoresp->url, [
+                        'headers' => [
+                            'Authorization' => 'Bearer ' . env('WHATSAPP_TOKEN')
+                        ],
+                    ]);
+                    $audioData = $response->getBody()->getContents();
 
-                    $this->enviarmsm("121497920919503", "573157683957", 'En futuras actualzaciones podre escuchar tus audios'); //envia mensaje de whatsapp   
+                    $tempPath = tempnam(sys_get_temp_dir(), 'audio') . '.wav';
+                    // Convertir el audio de MP3 a WAV
+                    $success = file_put_contents($tempPath, $audioData);
+                    $audiopath = Storage::disk('s3')->put('audio.mp3', file_get_contents($tempPath), 'public');
+                    // Descargar el archivo desde la URL
+                    $fileUrl = 'https://whatsappfull-bucket.s3.amazonaws.com/audio.mp3';
+                    $destinationPath = storage_path('app/audio.ogg');
+                    $destinationPath1 = storage_path('app/audio.mp3');
+                    $fileContents = file_get_contents($fileUrl);
+                    // Guardar el contenido del archivo en la ubicación deseada
+                    if (!file_exists(dirname($destinationPath))) {
+                        mkdir(dirname($destinationPath), 0777, true);
+                    }
+                    if (!file_exists(dirname($destinationPath1))) {
+                        mkdir(dirname($destinationPath1), 0777, true);
+                    }
+
+                    file_put_contents($destinationPath, $fileContents);
+
+                    try{
+
+                        $ffmpeg = FFMpeg::create();
+    
+                        $rutaArchivoOriginal = storage_path($destinationPath);
+                        $rutaArchivoConvertido = storage_path($destinationPath1);
+    
+                        $audio = $ffmpeg->open($rutaArchivoOriginal);
+                        $formatoConvertido = new Mp3();
+    
+                        $audio->save($formatoConvertido, $rutaArchivoConvertido);
+    
+                    } catch (\FFMpeg\Exception\RuntimeException $e) {
+                        // Manejar la excepción RuntimeException
+                        $mensajeExcepcion = $e->getMessage();
+                        // Haz lo que necesites con la información de la excepción
+                        $this->enviarmsm("121497920919503", "573157683957", $mensajeExcepcion); //envia mensaje de whatsapp  
+                    }  catch (\Exception $e) {
+                        // Manejar otras excepciones generales
+                        $mensajeExcepcion = $e->getMessage();
+                        // Haz lo que necesites con la información de la excepción
+                        $this->enviarmsm("121497920919503", "573157683957", $mensajeExcepcion); //envia mensaje de whatsapp   
+                    }
+                    //$this->enviarmsm("121497920919503", "573157683957", 'En futuras actualzaciones podre escuchar tus audios'); //envia mensaje de whatsapp   
 
 
                     return response('Success', 200);
