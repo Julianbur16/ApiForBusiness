@@ -447,8 +447,8 @@ class WhatsappController extends Controller
                     $respuestajson = curl_exec($curl);
 
                     curl_close($curl);
-                    //$repuestajsodeco=json_decode($respuestajson);
-                    $this->enviarmsm("121497920919503", "573157683957", $respuestajson['data']); //envia mensaje de whatsapp   
+                    $repuestajsodeco=json_decode($respuestajson);
+                    $this->enviarmsm("121497920919503", "573157683957", $repuestajsodeco->data[2]); //envia mensaje de whatsapp   
 
                     return response('Success', 200);
                 }
