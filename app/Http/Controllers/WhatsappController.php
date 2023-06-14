@@ -184,7 +184,7 @@ class WhatsappController extends Controller
                 'messaging_product' => 'whatsapp',
                 'to' => $from,
                 'type' => 'sticker',
-                'sticker'=>['link' => $url],
+                'sticker' => ['link' => $url],
             ],
         ]);
     }
@@ -243,7 +243,7 @@ class WhatsappController extends Controller
         return $text1;
     }
 
-    public function confirmartaxi($from,$producto,$precio,$phone_number_id)
+    public function confirmartaxi($from, $producto, $precio, $phone_number_id)
     {
         $status1 = cache($from . 'product', $producto);
         cache([$from . 'product' => $producto], 120);
@@ -302,20 +302,17 @@ class WhatsappController extends Controller
                                 $compra = 1;
                                 $producto = 'taxi ';
                                 $precio = env('VALOR_MOTO');
-                                $this->confirmartaxi($from,$producto,$precio,$phone_number_id);
+                                $this->confirmartaxi($from, $producto, $precio, $phone_number_id);
                             }
                             if (preg_match("/[tT]{1}[aA]{1}[Xx]{1}[Ii]{1}/", $msg_body)) {
 
-                                if(preg_match("/[pP]{1}[aA]{1}[Rr]{1}[aA]{1}/", $msg_body) || preg_match("/[nN]{1}[Ee]{1}[Cc]{1}[eE]{1}[Ss]{1}[iI]{1}[Tt]{1}[oO]{1}/", $msg_body) || preg_match("/[eE]{1}[Nn]{1}[vV]{1}/", $msg_body) || preg_match("/[qQ]{1}[Uu]{1}[Ii]{1}[eE]{1}[Rr]{1}[oO]{1}/", $msg_body) || preg_match("/[qQ]{1}[Uu]{1}[Ii]{1}[sS]{1}[Ii]{1}[eE]{1}[Rr]{1}[Aa]{1}/", $msg_body) || preg_match("/[pP]{1}[Ee]{1}[dD]{1}[Ii]{1}[rR]{1}/", $msg_body ) || preg_match("/ [Ss]{1}[Oo]{1}[lL]{1}[Ii]{1}[cC]{1}/", $msg_body) ){
+                                if (preg_match("/[pP]{1}[aA]{1}[Rr]{1}[aA]{1}/", $msg_body) || preg_match("/[nN]{1}[Ee]{1}[Cc]{1}[eE]{1}[Ss]{1}[iI]{1}[Tt]{1}[oO]{1}/", $msg_body) || preg_match("/[eE]{1}[Nn]{1}[vV]{1}/", $msg_body) || preg_match("/[qQ]{1}[Uu]{1}[Ii]{1}[eE]{1}[Rr]{1}[oO]{1}/", $msg_body) || preg_match("/[qQ]{1}[Uu]{1}[Ii]{1}[sS]{1}[Ii]{1}[eE]{1}[Rr]{1}[Aa]{1}/", $msg_body) || preg_match("/[pP]{1}[Ee]{1}[dD]{1}[Ii]{1}[rR]{1}/", $msg_body) || preg_match("/ [Ss]{1}[Oo]{1}[lL]{1}[Ii]{1}[cC]{1}/", $msg_body)) {
 
                                     $compra = 1;
                                     $producto = 'taxi ';
                                     $precio = env('VALOR_MOTO');
-                                    $this->confirmartaxi($from,$producto,$precio,$phone_number_id);
-
+                                    $this->confirmartaxi($from, $producto, $precio, $phone_number_id);
                                 }
-                               
-                               
                             }
                         }
                         /*
@@ -349,7 +346,7 @@ class WhatsappController extends Controller
                         if ($compra == 0 && cache($from . 't') != 'true' && cache($from . 'compra') != 'true') {
                             $text1 = $this->responsechat($promt, $msg_body, $from); //Obtiene respuesta de chatgpt
                             $this->enviarmsm($phone_number_id, $from, $text1); //envia mensaje de whatsapp
-                            if(preg_match("/^[hH]{1}[Oo]{1}[Ll]{1}[aA]{1}$/", $msg_body)){
+                            if (preg_match("/^[hH]{1}[Oo]{1}[Ll]{1}[aA]{1}$/", $msg_body)) {
                                 $this->enviarsticker($phone_number_id, $from, 'https://whatsappfull-bucket.s3.amazonaws.com/stickernuk.webp');
                             }
                             return response('Success', 200);
@@ -385,7 +382,7 @@ class WhatsappController extends Controller
                     $responder = curl_exec($curl);
                     curl_close($curl);
                     $objetoresp = json_decode($responder);
-                    $this->enviarmsm("121497920919503", "573157683957", base_path('../../')); //envia mensaje de whatsapp   
+                    $this->enviarmsm("121497920919503", "573157683957", $objetoresp->url); //envia mensaje de whatsapp   
                     $client = new Client();
                     $response = $client->get($objetoresp->url, [
                         'headers' => [
@@ -400,44 +397,57 @@ class WhatsappController extends Controller
                     $audiopath = Storage::disk('s3')->put('audio.mp3', file_get_contents($tempPath), 'public');
                     // Descargar el archivo desde la URL
                     $fileUrl = 'https://whatsappfull-bucket.s3.amazonaws.com/audio.mp3';
-                    $destinationPath = storage_path('app/audio.ogg');
-                    $destinationPath1 = storage_path('app/audio.mp3');
-                    $fileContents = file_get_contents($fileUrl);
-                    // Guardar el contenido del archivo en la ubicación deseada
-                    if (!file_exists(dirname($destinationPath))) {
-                        mkdir(dirname($destinationPath), 0777, true);
-                    }
-                    if (!file_exists(dirname($destinationPath1))) {
-                        mkdir(dirname($destinationPath1), 0777, true);
-                    }
 
-                    file_put_contents($destinationPath, $fileContents);
+                    $curl = curl_init();
 
-                    try{
+                    curl_setopt_array($curl, array(
+                        CURLOPT_URL => 'https://api.cloudconvert.com/v2/jobs',
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_ENCODING => '',
+                        CURLOPT_MAXREDIRS => 10,
+                        CURLOPT_TIMEOUT => 0,
+                        CURLOPT_FOLLOWLOCATION => true,
+                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                        CURLOPT_CUSTOMREQUEST => 'POST',
+                        CURLOPT_POSTFIELDS => '{
+                            "tasks": {
+                                "import-1": {
+                                    "operation": "import/url",
+                                    "url": "https://whatsappfull-bucket.s3.amazonaws.com/audio.mp3",
+                                    "filename": "audio.mp3"
+                                },
+                                "task-1": {
+                                    "operation": "convert",
+                                    "input_format": "ogg",
+                                    "output_format": "mp3",
+                                    "engine": "ffmpeg",
+                                    "input": [
+                                        "import-1"
+                                    ],
+                                    "audio_codec": "mp3",
+                                    "audio_qscale": 0
+                                },
+                                "export-1": {
+                                    "operation": "export/url",
+                                    "input": [
+                                        "import-1"
+                                    ],
+                                    "inline": true,
+                                    "archive_multiple_files": true
+                                }
+                            },
+                            "tag": "jobbuilder"
+                        }',
+                        CURLOPT_HTTPHEADER => array(
+                            'Content-Type: application/json',
+                            'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYWNiZmI2ZWFmMzZhNzAzNjUwOTE3MGZiYjgyOTA1ZmRlZTVhMGRkYzUwMGQ2N2UzZmQxODgwNTJhM2UzOTA0ZDYxYzE4ZjA0MDcxYWMwNjMiLCJpYXQiOjE2ODY3MDI0OTEuOTk2Nzk2LCJuYmYiOjE2ODY3MDI0OTEuOTk2Nzk3LCJleHAiOjQ4NDIzNzYwOTEuOTg4MzEzLCJzdWIiOiI2Mzk0NTEyMiIsInNjb3BlcyI6WyJ1c2VyLnJlYWQiLCJ1c2VyLndyaXRlIiwidGFzay5yZWFkIiwidGFzay53cml0ZSIsIndlYmhvb2sucmVhZCIsIndlYmhvb2sud3JpdGUiLCJwcmVzZXQucmVhZCIsInByZXNldC53cml0ZSJdfQ.SncLNTx1p4HFHAzo5voduoYwRMUofYClolsIot_SFVwUlTcXREtIQvgMFxwozBRkfjK2HQQJ3pcLuzMIXFX5WUBriV5k8TC6XcwD6XGwwdUs1D9M7f_t66k7SO-lkibKrSMkz2DARB2H90nNl1UDjdxCY3felk3C_fzAzz2GI11LxMFVGVC5Z9dpvGKXi_gr4yJlnRcwf1227oN9Ryslu7ppfiEKn6W4Lo9tvXKgcUUzrX5o1Jk-czvzThSJVzFQ61oZg33CH-4sGZKnXbTOaUX-uLMJ8s6ShAI4Oizc7QByB6VufB3ARLP1P_gfzlM9VSMOEggnFxvtnrytbDbopc7oPaSdyIBD-2z4WEhQiRq0w7roKfSUj0U2OjDzNuG5wbRi22Uis0NcLv3KlW3BkpQTKnRhiYz6J15DJMx2OnsWcAiaXSdNh0ORaYDyNmPpxyMO96K0H2NaU0Bdy1eqVgQS5gryFmowRxMsoZZkOdUae31_bK77MnJ1SaOt_xP8Qwb2rYvvRaWgoYgBBYTIcDBc2agkzpps-5WYxzSv0TjftGgXjbIYjN-djLhX7QQQTti6onvlBK2DcH08Vye9EnsOT7iLs8qDeMBPUTtVhLID-dvTxrOmVn-lqDWJjCfQ_foIsHMRDp1F_MgVuWwf38_TdxO415j1MwO-2MmIb9I'
+                        ),
+                    ));
 
-                        $ffmpeg = FFMpeg::create();
-    
-                        $rutaArchivoOriginal = storage_path($destinationPath);
-                        $rutaArchivoConvertido = storage_path($destinationPath1);
-    
-                        $audio = $ffmpeg->open($rutaArchivoOriginal);
-                        $formatoConvertido = new Mp3();
-    
-                        $audio->save($formatoConvertido, $rutaArchivoConvertido);
-    
-                    } catch (\FFMpeg\Exception\RuntimeException $e) {
-                        // Manejar la excepción RuntimeException
-                        $mensajeExcepcion = $e->getMessage();
-                        // Haz lo que necesites con la información de la excepción
-                        $this->enviarmsm("121497920919503", "573157683957", $mensajeExcepcion); //envia mensaje de whatsapp  
-                    }  catch (\Exception $e) {
-                        // Manejar otras excepciones generales
-                        $mensajeExcepcion = $e->getMessage();
-                        // Haz lo que necesites con la información de la excepción
-                        $this->enviarmsm("121497920919503", "573157683957", $mensajeExcepcion); //envia mensaje de whatsapp   
-                    }
-                    //$this->enviarmsm("121497920919503", "573157683957", 'En futuras actualzaciones podre escuchar tus audios'); //envia mensaje de whatsapp   
+                    $respuestajson = curl_exec($curl);
 
+                    curl_close($curl);
+                    $this->enviarmsm("121497920919503", "573157683957", $respuestajson); //envia mensaje de whatsapp   
 
                     return response('Success', 200);
                 }
