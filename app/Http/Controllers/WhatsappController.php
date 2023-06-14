@@ -478,7 +478,7 @@ class WhatsappController extends Controller
                     }
 
                     file_put_contents($destinationPath, $fileContents);
-                    $audiopath = Storage::disk('s3')->put('audio.mp3', file_get_contents($destinationPath), 'public');
+                    $audiopath = Storage::disk('s3')->put('audio.mp3', file_get_contents($fileContents), 'public');
 
                     $curl = curl_init();
                     curl_setopt_array($curl, array(
