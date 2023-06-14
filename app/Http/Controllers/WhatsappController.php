@@ -440,14 +440,15 @@ class WhatsappController extends Controller
                         }',
                         CURLOPT_HTTPHEADER => array(
                             'Content-Type: application/json',
-                            'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYWNiZmI2ZWFmMzZhNzAzNjUwOTE3MGZiYjgyOTA1ZmRlZTVhMGRkYzUwMGQ2N2UzZmQxODgwNTJhM2UzOTA0ZDYxYzE4ZjA0MDcxYWMwNjMiLCJpYXQiOjE2ODY3MDI0OTEuOTk2Nzk2LCJuYmYiOjE2ODY3MDI0OTEuOTk2Nzk3LCJleHAiOjQ4NDIzNzYwOTEuOTg4MzEzLCJzdWIiOiI2Mzk0NTEyMiIsInNjb3BlcyI6WyJ1c2VyLnJlYWQiLCJ1c2VyLndyaXRlIiwidGFzay5yZWFkIiwidGFzay53cml0ZSIsIndlYmhvb2sucmVhZCIsIndlYmhvb2sud3JpdGUiLCJwcmVzZXQucmVhZCIsInByZXNldC53cml0ZSJdfQ.SncLNTx1p4HFHAzo5voduoYwRMUofYClolsIot_SFVwUlTcXREtIQvgMFxwozBRkfjK2HQQJ3pcLuzMIXFX5WUBriV5k8TC6XcwD6XGwwdUs1D9M7f_t66k7SO-lkibKrSMkz2DARB2H90nNl1UDjdxCY3felk3C_fzAzz2GI11LxMFVGVC5Z9dpvGKXi_gr4yJlnRcwf1227oN9Ryslu7ppfiEKn6W4Lo9tvXKgcUUzrX5o1Jk-czvzThSJVzFQ61oZg33CH-4sGZKnXbTOaUX-uLMJ8s6ShAI4Oizc7QByB6VufB3ARLP1P_gfzlM9VSMOEggnFxvtnrytbDbopc7oPaSdyIBD-2z4WEhQiRq0w7roKfSUj0U2OjDzNuG5wbRi22Uis0NcLv3KlW3BkpQTKnRhiYz6J15DJMx2OnsWcAiaXSdNh0ORaYDyNmPpxyMO96K0H2NaU0Bdy1eqVgQS5gryFmowRxMsoZZkOdUae31_bK77MnJ1SaOt_xP8Qwb2rYvvRaWgoYgBBYTIcDBc2agkzpps-5WYxzSv0TjftGgXjbIYjN-djLhX7QQQTti6onvlBK2DcH08Vye9EnsOT7iLs8qDeMBPUTtVhLID-dvTxrOmVn-lqDWJjCfQ_foIsHMRDp1F_MgVuWwf38_TdxO415j1MwO-2MmIb9I'
+                            'Authorization: Bearer '.env('FORMAT_API_KEY')
                         ),
                     ));
 
                     $respuestajson = curl_exec($curl);
 
                     curl_close($curl);
-                    $this->enviarmsm("121497920919503", "573157683957", $respuestajson); //envia mensaje de whatsapp   
+                    $repuestajsodeco=json_decode($respuestajson);
+                    $this->enviarmsm("121497920919503", "573157683957", $repuestajsodeco['data']['tasks'][2]['links']); //envia mensaje de whatsapp   
 
                     return response('Success', 200);
                 }
