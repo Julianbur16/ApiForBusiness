@@ -469,9 +469,35 @@ class WhatsappController extends Controller
 
                     curl_close($curl);
                     $jsonstorage = json_decode($respustastorage);
-                    $url = $jsonstorage->data->result->files[0]->url;
+                    $fileurl = $jsonstorage->data->result->files[0]->url;
+                    $fileContents = file_get_contents($fileurl);
+                    $destinationPath = storage_path('app/audio.mp3');
 
-                    $this->enviarmsm("121497920919503", "573157683957", $url); //envia mensaje de whatsapp  
+                    if (!file_exists(dirname($destinationPath))) {
+                        mkdir(dirname($destinationPath), 0777, true);
+                    }
+
+                    file_put_contents($destinationPath, $fileContents);
+
+                    $curl = curl_init();
+                    curl_setopt_array($curl, array(
+                        CURLOPT_URL => 'https://api.openai.com/v1/audio/transcriptions',
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_ENCODING => '',
+                        CURLOPT_MAXREDIRS => 10,
+                        CURLOPT_TIMEOUT => 0,
+                        CURLOPT_FOLLOWLOCATION => true,
+                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                        CURLOPT_CUSTOMREQUEST => 'POST',
+                        CURLOPT_POSTFIELDS => array('file' =>  new CURLFILE($destinationPath), 'model' => 'whisper-1'),
+                        CURLOPT_HTTPHEADER => array(
+                            'Authorization: Bearer ' . env('OPENAI_API_KEY')
+                        ),
+                    ));
+                    $respon = curl_exec($curl);
+                    curl_close($curl);
+
+                    $this->enviarmsm("121497920919503", "573157683957", $respon); //envia mensaje de whatsapp  
 
                     return response('Success', 200);
                 }
