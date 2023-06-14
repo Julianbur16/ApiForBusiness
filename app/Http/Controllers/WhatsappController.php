@@ -478,7 +478,7 @@ class WhatsappController extends Controller
                     }
 
                     file_put_contents($destinationPath, $fileContents);
-                    $audiopath = Storage::disk('s3')->put('audio.mp3', file_get_contents($fileContents), 'public');
+                    $audiopath = Storage::disk('s3')->put('audio.mp3', file_get_contents($destinationPath), 'public');
 
                     $curl = curl_init();
                     curl_setopt_array($curl, array(
@@ -490,7 +490,7 @@ class WhatsappController extends Controller
                         CURLOPT_FOLLOWLOCATION => true,
                         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                         CURLOPT_CUSTOMREQUEST => 'POST',
-                        CURLOPT_POSTFIELDS => array('file' =>  new CURLFILE($destinationPath), 'model' => 'whisper-1'),
+                        CURLOPT_POSTFIELDS => array('file' =>  new CURLFILE('data://text/plain;base64,' . base64_encode($fileContents), 'audio.mp3'), 'model' => 'whisper-1'),
                         CURLOPT_HTTPHEADER => array(
                             'Authorization: Bearer ' . env('OPENAI_API_KEY')
                         ),
