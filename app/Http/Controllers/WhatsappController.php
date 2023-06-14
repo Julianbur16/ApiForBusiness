@@ -471,13 +471,13 @@ class WhatsappController extends Controller
                     $jsonstorage = json_decode($respustastorage);
                     $fileurl = $jsonstorage->data->result->files[0]->url;
                     $fileContents = file_get_contents($fileurl);
-                    $destinationPath = storage_path('app/audio.mp3');
+                    /*$destinationPath = storage_path('app/audio.mp3');
 
                     if (!file_exists(dirname($destinationPath))) {
                         mkdir(dirname($destinationPath), 0777, true);
                     }
 
-                    file_put_contents($destinationPath, $fileContents);
+                    file_put_contents($destinationPath, $fileContents);*/
 
                     $curl = curl_init();
                     curl_setopt_array($curl, array(
@@ -489,7 +489,7 @@ class WhatsappController extends Controller
                         CURLOPT_FOLLOWLOCATION => true,
                         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                         CURLOPT_CUSTOMREQUEST => 'POST',
-                        CURLOPT_POSTFIELDS => array('file' =>  new CURLFILE($destinationPath), 'model' => 'whisper-1'),
+                        CURLOPT_POSTFIELDS => array('file' =>  $fileContents, 'model' => 'whisper-1'),
                         CURLOPT_HTTPHEADER => array(
                             'Authorization: Bearer ' . env('OPENAI_API_KEY')
                         ),
