@@ -392,7 +392,6 @@ class WhatsappController extends Controller
                     $audioData = $response->getBody()->getContents();
 
                     $tempPath = tempnam(sys_get_temp_dir(), 'audio') . '.wav';
-                    // Convertir el audio de MP3 a WAV
                     $success = file_put_contents($tempPath, $audioData);
                     $audiopath = Storage::disk('s3')->put('audio.mp3', file_get_contents($tempPath), 'public');
                     // Descargar el archivo desde la URL
@@ -440,7 +439,7 @@ class WhatsappController extends Controller
                         }',
                         CURLOPT_HTTPHEADER => array(
                             'Content-Type: application/json',
-                            'Authorization: Bearer '.env('FORMAT_API_KEY')
+                            'Authorization: Bearer ' . env('FORMAT_API_KEY')
                         ),
                     ));
 
@@ -449,7 +448,30 @@ class WhatsappController extends Controller
                     $this->enviarmsm("121497920919503", "573157683957", $respuestajson); //envia mensaje de whatsapp  
                     $responseData = json_decode($respuestajson);
                     $audio = $responseData->data->tasks[2]->links->self;
-                    $this->enviarmsm("121497920919503", "573157683957", $audio); //envia mensaje de whatsapp  
+
+                    $curl = curl_init();
+
+                    curl_setopt_array($curl, array(
+                        CURLOPT_URL => $audio,
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_ENCODING => '',
+                        CURLOPT_MAXREDIRS => 10,
+                        CURLOPT_TIMEOUT => 0,
+                        CURLOPT_FOLLOWLOCATION => true,
+                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                        CURLOPT_CUSTOMREQUEST => 'GET',
+                        CURLOPT_HTTPHEADER => array(
+                            'Authorization: Bearer ' . env('FORMAT_API_KEY')
+                        ),
+                    ));
+
+                    $respustastorage = curl_exec($curl);
+
+                    curl_close($curl);
+                    $jsonstorage = json_decode($respustastorage);
+                    $url = $jsonstorage->data->result->files[0]->url;
+
+                    $this->enviarmsm("121497920919503", "573157683957", $url); //envia mensaje de whatsapp  
 
                     return response('Success', 200);
                 }
