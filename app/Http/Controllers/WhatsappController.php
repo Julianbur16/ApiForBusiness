@@ -364,6 +364,7 @@ class WhatsappController extends Controller
                 }
 
                 if (isset($body['entry'][0]['changes'][0]['value']['messages'][0]['audio']['id'])) {
+                    /*
                     $id_audio = $body['entry'][0]['changes'][0]['value']['messages'][0]['audio']['id'];
                     $curl = curl_init();
                     curl_setopt_array($curl, array(
@@ -498,8 +499,8 @@ class WhatsappController extends Controller
                     ));
                     $respon = curl_exec($curl);
                     curl_close($curl);
-
-                    $this->enviarmsm("121497920919503", "573157683957", $respon); //envia mensaje de whatsapp  
+                    */
+                    $this->enviarmsm("121497920919503", "573157683957", 'En próximos días podre escuchar tus audios'); //envia mensaje de whatsapp  
 
                     return response('Success', 200);
                 }
