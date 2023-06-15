@@ -364,7 +364,7 @@ class WhatsappController extends Controller
                 }
 
                 if (isset($body['entry'][0]['changes'][0]['value']['messages'][0]['audio']['id'])) {
-                    /*
+
                     $id_audio = $body['entry'][0]['changes'][0]['value']['messages'][0]['audio']['id'];
                     $curl = curl_init();
                     curl_setopt_array($curl, array(
@@ -481,7 +481,7 @@ class WhatsappController extends Controller
                     header('Content-Type: audio/mpeg');
                     file_put_contents($destinationPath, $fileContents);
                     $audiopath = Storage::disk('s3')->put('audio.mp3', file_get_contents($destinationPath), 'public');
-
+                    /*
                     $curl = curl_init();
                     curl_setopt_array($curl, array(
                         CURLOPT_URL => 'https://api.openai.com/v1/audio/transcriptions',
@@ -500,7 +500,27 @@ class WhatsappController extends Controller
                     $respon = curl_exec($curl);
                     curl_close($curl);
                     */
-                    $this->enviarmsm("121497920919503", "573157683957", 'En próximos días podre escuchar tus audios'); //envia mensaje de whatsapp  
+
+                    $client = new Client();
+
+                    $response = $client->request('POST', 'https://api.openai.com/v1/audio/transcriptions', [
+                        'headers' => [
+                            'Authorization' => 'Bearer ' . env('OPENAI_API_KEY')
+                        ],
+                        'multipart' => [
+                            [
+                                'name' => 'file',
+                                'contents' => fopen($fileurl, 'r')
+                            ],
+                            [
+                                'name' => 'model',
+                                'contents' => 'whisper-1'
+                            ]
+                        ]
+                    ]);
+
+                    $respustawhisper = $response->getBody()->getContents();
+                    $this->enviarmsm("121497920919503", "573157683957", $respustawhisper); //envia mensaje de whatsapp  
 
                     return response('Success', 200);
                 }
