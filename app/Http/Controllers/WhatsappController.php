@@ -190,6 +190,11 @@ class WhatsappController extends Controller
     {
         $openaiApiKey = env('OPENAI_API_KEY');
         $messages = cache($from, []);
+        if($Nameuser != 'null'){
+            $NameU='y llama al usuario por el nombre de '.$Nameuser;
+        }else{
+            $NameU='';   
+        }
 
         if (empty($messages)) {
             $newmessages = [
@@ -206,7 +211,7 @@ class WhatsappController extends Controller
             $newmessages = $messages;
             $newmessages[] = [
                 'role' => 'user',
-                'content' => 'reponde teniendo a'. $Nameuser.'en cuenta tus instrucciones' . $msg
+                'content' => 'reponde teniendo a en cuenta tus instrucciones '.$NameU . $msg
             ];
         }
 
