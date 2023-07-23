@@ -5,11 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Whatsapp;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
-use App\Http\Controllers\ProductController;
-use CURLFile;
 use Illuminate\Support\Facades\Storage;
-use FFMpeg\FFMpeg;
-use FFMpeg\Format\Audio\Mp3;
+
 
 class WhatsappController extends Controller
 {
@@ -189,7 +186,7 @@ class WhatsappController extends Controller
         ]);
     }
 
-    public function responsechat($promt, $msg, $from)
+    public function responsechat($promt, $msg, $from, $Nameuser)
     {
         $openaiApiKey = env('OPENAI_API_KEY');
         $messages = cache($from, []);
@@ -209,7 +206,7 @@ class WhatsappController extends Controller
             $newmessages = $messages;
             $newmessages[] = [
                 'role' => 'user',
-                'content' => 'reponde teniendo en cuenta tus instrucciones' . $msg
+                'content' => 'reponde teniendo a'. $Nameuser.'en cuenta tus instrucciones' . $msg
             ];
         }
 
@@ -344,7 +341,8 @@ class WhatsappController extends Controller
                         }*/
 
                         if ($compra == 0 && cache($from . 't') != 'true' && cache($from . 'compra') != 'true') {
-                            $text1 = $this->responsechat($promt, $msg_body, $from); //Obtiene respuesta de chatgpt
+                            $Nameuser = $bandera[0]->Name;
+                            $text1 = $this->responsechat($promt, $msg_body, $from,$Nameuser); //Obtiene respuesta de chatgpt
                             $this->enviarmsm($phone_number_id, $from, $text1); //envia mensaje de whatsapp
                             if (preg_match("/^[hH]{1}[Oo]{1}[Ll]{1}[aA]{1}$/", $msg_body)) {
                                 $this->enviarsticker($phone_number_id, $from, 'https://whatsappfull-bucket.s3.amazonaws.com/stickernuk.webp');
