@@ -191,7 +191,7 @@ class WhatsappController extends Controller
         $openaiApiKey = env('OPENAI_API_KEY');
         $messages = cache($from, []);
         if($Nameuser != 'null'){
-            $NameU='y llama al usuario por el nombre de '.$Nameuser;
+            $NameU='y llamame por el nombre de '.$Nameuser;
         }else{
             $NameU='';   
         }
