@@ -317,7 +317,7 @@ class WhatsappController extends Controller
                                 }
                             }
                         }
-                        /*
+                        
                         if (cache($from . 't') == 'true') {
                             $compra = 1;
                             $theproduct = new ProductController;
@@ -343,7 +343,7 @@ class WhatsappController extends Controller
                             $lista_productos_obj = new ProductController;
                             $lista_productos = $lista_productos_obj->indexenumerator();
                             $this->enviarmsm($phone_number_id, $from, $lista_productos); //envia mensaje de whatsapp
-                        }*/
+                        }
 
                         if ($compra == 0 && cache($from . 't') != 'true' && cache($from . 'compra') != 'true') {
                             $Nameuser = $bandera[0]->Name;
